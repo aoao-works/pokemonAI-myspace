@@ -1,0 +1,36 @@
+メインモデル初期化: best (C:\projects\pokemonAI-myspace\submission\ptcg_best_model.pth)
+
+=== ルールベース専用 PPO 学習 ===
+  iters=40  games/iter=100  lr=3e-05→5e-06
+  clip=0.1  kl_beta=0.0  epochs=4
+  対戦相手: PTCGstadium/agents/baseline (ルールベース)
+  出力: C:\projects\pokemonAI-myspace\submission\ptcg_rb_model.pth
+
+初期評価中 (vs ルールベース)...
+初期評価: 19/50 = 38%
+初期モデルを C:\projects\pokemonAI-myspace\submission\ptcg_rb_model.pth に保存
+
+[  1/40] games=  100  W/D/L=34/0/66  wr=34%  p=-0.0068  v=0.1434  kl=0.4826  lr=3.0e-05  34.8s  total=0.6min
+[  2/40] games=  200  W/D/L=35/0/65  wr=35%  p=-0.0034  v=0.1488  kl=0.4587  lr=3.0e-05  31.1s  total=1.1min
+[  3/40] games=  300  W/D/L=29/0/71  wr=29%  p=-0.0029  v=0.1312  kl=0.4810  lr=3.0e-05  32.9s  total=1.6min
+[  4/40] games=  400  W/D/L=28/0/72  wr=28%  p=-0.0021  v=0.1308  kl=0.4543  lr=2.9e-05  31.9s  total=2.2min
+[  5/40] games=  500  W/D/L=30/1/69  wr=30%  p=0.0019  v=0.1258  kl=0.4700  lr=2.9e-05  36.2s  total=2.8min
+[  6/40] games=  600  W/D/L=32/0/68  wr=32%  p=-0.0012  v=0.1319  kl=0.4858  lr=2.9e-05  37.9s  total=3.4min
+[  7/40] games=  700  W/D/L=34/1/65  wr=34%  p=-0.0011  v=0.1425  kl=0.4866  lr=2.8e-05  27.8s  total=3.9min
+[  8/40] games=  800  W/D/L=25/0/75  wr=25%  p=-0.0029  v=0.1405  kl=0.4961  lr=2.8e-05  25.8s  total=4.3min
+[  9/40] games=  900  W/D/L=34/1/65  wr=34%  p=-0.0038  v=0.1336  kl=0.4825  lr=2.7e-05  28.9s  total=4.8min
+[ 10/40] games= 1000  W/D/L=23/0/77  wr=23%  p=-0.0017  v=0.1146  kl=0.4697  lr=2.6e-05  28.6s  total=5.3min
+  [EVAL vs ルールベース] 18/50 = 36%
+[ 11/40] games= 1100  W/D/L=40/0/60  wr=40%  p=-0.0027  v=0.1713  kl=0.4833  lr=2.6e-05  29.8s  total=5.9min
+[ 12/40] games= 1200  W/D/L=28/0/72  wr=28%  p=0.0009  v=0.1262  kl=0.5040  lr=2.5e-05  28.0s  total=6.4min
+[ 13/40] games= 1300  W/D/L=25/0/75  wr=25%  p=-0.0011  v=0.1193  kl=0.4921  lr=2.4e-05  27.3s  total=6.9min
+[ 14/40] games= 1400  W/D/L=28/0/72  wr=28%  p=-0.0027  v=0.1100  kl=0.4859  lr=2.3e-05  28.9s  total=7.3min
+[ 15/40] games= 1500  W/D/L=31/0/69  wr=31%  p=-0.0042  v=0.1345  kl=0.4828  lr=2.2e-05  28.2s  total=7.8min
+[ 16/40] games= 1600  W/D/L=28/2/70  wr=29%  p=-0.0016  v=0.1455  kl=0.4688  lr=2.1e-05  26.0s  total=8.2min
+[ 17/40] games= 1700  W/D/L=30/1/69  wr=30%  p=-0.0013  v=0.1284  kl=0.4839  lr=2.0e-05  29.8s  total=8.7min
+[ 18/40] games= 1800  W/D/L=32/0/68  wr=32%  p=-0.0059  v=0.1468  kl=0.4763  lr=1.9e-05  27.2s  total=9.2min
+[ 19/40] games= 1900  W/D/L=39/0/61  wr=39%  p=-0.0029  v=0.1464  kl=0.4962  lr=1.8e-05  30.2s  total=9.7min
+[ 20/40] games= 2000  W/D/L=33/0/67  wr=33%  p=-0.0046  v=0.1467  kl=0.4651  lr=1.7e-05  30.8s  total=10.2min
+  [EVAL vs ルールベース] 14/50 = 28%
+[ 21/40] games= 2100  W/D/L=28/1/71  wr=28%  p=-0.0067  v=0.1210  kl=0.5046  lr=1.7e-05  29.9s  total=10.9min
+[ 22/40] games= 2200  W/D/L=29/0/71  wr=29%  p=-0.0018  v=0.1280  kl=0.4895  lr=1.6e-05  28.5s  total=11.4min
