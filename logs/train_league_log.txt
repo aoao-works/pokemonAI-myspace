@@ -1,0 +1,338 @@
+メインモデル初期化: rl
+リーグ追加 (錨): baseline
+リーグ追加 (錨): rl_v0
+
+=== PPO リーグ学習 ===
+  イテレーション: 300  ゲーム/iter: 16
+  LR=5e-05  clip=0.1  league_size=20
+  初期リーグメンバー: ['baseline', 'rl_v0']
+  出力: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+
+[  1/300] games=   16  W/D/L=6/0/10  wr=38%(直近38%)  trans= 720  p=-0.0034  v=0.1479  opps=[baseline:9 rl_v0:7]  8.6s
+[  2/300] games=   32  W/D/L=6/0/10  wr=38%(直近38%)  trans= 817  p=0.0014  v=0.1563  opps=[baseline:10 rl_v0:6]  9.4s
+[  3/300] games=   48  W/D/L=9/0/7  wr=56%(直近44%)  trans= 699  p=-0.0000  v=0.1770  opps=[baseline:7 rl_v0:9]  8.1s
+[  4/300] games=   64  W/D/L=11/0/5  wr=69%(直近50%)  trans= 746  p=-0.0022  v=0.1204  opps=[baseline:7 rl_v0:9]  8.7s
+[  5/300] games=   80  W/D/L=8/0/8  wr=50%(直近50%)  trans= 641  p=-0.0032  v=0.1766  opps=[baseline:9 rl_v0:7]  9.8s
+[  6/300] games=   96  W/D/L=8/0/8  wr=50%(直近50%)  trans= 631  p=-0.0170  v=0.1916  opps=[baseline:9 rl_v0:7]  8.8s
+[  7/300] games=  112  W/D/L=10/0/6  wr=62%(直近52%)  trans= 805  p=0.0016  v=0.1435  opps=[baseline:9 rl_v0:7]  10.2s
+[  8/300] games=  128  W/D/L=7/0/9  wr=44%(直近51%)  trans= 714  p=0.0024  v=0.1369  opps=[baseline:8 rl_v0:8]  8.5s
+[  9/300] games=  144  W/D/L=13/0/3  wr=81%(直近54%)  trans= 664  p=-0.0005  v=0.1453  opps=[baseline:8 rl_v0:8]  8.0s
+[ 10/300] games=  160  W/D/L=7/0/9  wr=44%(直近53%)  trans= 680  p=-0.0033  v=0.1962  opps=[baseline:5 rl_v0:11]  8.3s
+[ 11/300] games=  176  W/D/L=8/0/8  wr=50%(直近54%)  trans= 673  p=-0.0007  v=0.1403  opps=[baseline:8 rl_v0:8]  7.9s
+[ 12/300] games=  192  W/D/L=8/0/8  wr=50%(直近56%)  trans= 635  p=-0.0185  v=0.1935  opps=[baseline:7 rl_v0:9]  7.9s
+[ 13/300] games=  208  W/D/L=5/1/10  wr=33%(直近53%)  trans= 803  p=0.0001  v=0.1624  opps=[baseline:7 rl_v0:9]  8.9s
+[ 14/300] games=  224  W/D/L=7/0/9  wr=44%(直近51%)  trans= 797  p=0.0043  v=0.1501  opps=[baseline:9 rl_v0:7]  9.3s
+[ 15/300] games=  240  W/D/L=9/0/7  wr=56%(直近51%)  trans= 752  p=-0.0054  v=0.1226  opps=[baseline:12 rl_v0:4]  8.7s
+[ 16/300] games=  256  W/D/L=8/0/8  wr=50%(直近51%)  trans= 763  p=-0.0028  v=0.1423  opps=[baseline:6 rl_v0:10]  8.7s
+[ 17/300] games=  272  W/D/L=9/1/6  wr=60%(直近51%)  trans= 753  p=-0.0032  v=0.1419  opps=[baseline:12 rl_v0:4]  8.8s
+[ 18/300] games=  288  W/D/L=7/1/8  wr=47%(直近52%)  trans= 803  p=0.0230  v=0.1077  opps=[baseline:9 rl_v0:7]  9.2s
+[ 19/300] games=  304  W/D/L=8/0/8  wr=50%(直近48%)  trans= 717  p=0.0042  v=0.1729  opps=[baseline:5 rl_v0:11]  8.3s
+[ 20/300] games=  320  W/D/L=6/0/10  wr=38%(直近48%)  trans= 720  p=-0.0034  v=0.1398  opps=[baseline:7 rl_v0:9]  8.6s
+[ 21/300] games=  336  W/D/L=8/0/8  wr=50%(直近48%)  trans= 617  p=0.0013  v=0.1205  opps=[baseline:6 rl_v0:10]  7.7s
+[ 22/300] games=  352  W/D/L=8/0/8  wr=50%(直近48%)  trans= 656  p=0.0011  v=0.1472  opps=[baseline:7 rl_v0:9]  7.4s
+[ 23/300] games=  368  W/D/L=12/0/4  wr=75%(直近52%)  trans= 712  p=-0.0010  v=0.1264  opps=[baseline:10 rl_v0:6]  8.7s
+[ 24/300] games=  384  W/D/L=7/0/9  wr=44%(直近52%)  trans= 707  p=-0.0040  v=0.1362  opps=[baseline:6 rl_v0:10]  8.1s
+[ 25/300] games=  400  W/D/L=10/0/6  wr=62%(直近53%)  trans= 741  p=0.0014  v=0.2050  opps=[baseline:8 rl_v0:8]  8.3s
+  => リーグ追加: league_iter25  (現在 3 メンバー: ['baseline', 'rl_v0', 'league_iter25'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[ 26/300] games=  416  W/D/L=10/0/6  wr=62%(直近54%)  trans= 744  p=-0.0004  v=0.1793  opps=[baseline:6 league_iter25:5 rl_v0:5]  8.5s
+[ 27/300] games=  432  W/D/L=6/0/10  wr=38%(直近52%)  trans= 732  p=-0.0012  v=0.1494  opps=[baseline:7 league_iter25:5 rl_v0:4]  8.5s
+[ 28/300] games=  448  W/D/L=9/0/7  wr=56%(直近52%)  trans= 743  p=-0.0039  v=0.1624  opps=[baseline:4 league_iter25:6 rl_v0:6]  8.7s
+[ 29/300] games=  464  W/D/L=6/0/10  wr=38%(直近51%)  trans= 669  p=-0.0027  v=0.1628  opps=[baseline:6 league_iter25:7 rl_v0:3]  8.0s
+[ 30/300] games=  480  W/D/L=5/0/11  wr=31%(直近51%)  trans= 715  p=-0.0002  v=0.1420  opps=[baseline:5 league_iter25:5 rl_v0:6]  8.2s
+[ 31/300] games=  496  W/D/L=8/0/8  wr=50%(直近51%)  trans= 756  p=-0.0009  v=0.1284  opps=[baseline:6 league_iter25:8 rl_v0:2]  8.8s
+[ 32/300] games=  512  W/D/L=8/0/8  wr=50%(直近51%)  trans= 734  p=-0.0028  v=0.1967  opps=[baseline:7 league_iter25:4 rl_v0:5]  8.4s
+[ 33/300] games=  528  W/D/L=8/0/8  wr=50%(直近48%)  trans= 707  p=-0.0000  v=0.1558  opps=[baseline:6 league_iter25:3 rl_v0:7]  8.2s
+[ 34/300] games=  544  W/D/L=6/0/10  wr=38%(直近48%)  trans= 810  p=0.0118  v=0.1279  opps=[baseline:5 league_iter25:3 rl_v0:8]  9.6s
+[ 35/300] games=  560  W/D/L=8/0/8  wr=50%(直近46%)  trans= 755  p=-0.0011  v=0.1564  opps=[baseline:5 league_iter25:8 rl_v0:3]  8.8s
+[ 36/300] games=  576  W/D/L=13/0/3  wr=81%(直近48%)  trans= 730  p=-0.0006  v=0.1827  opps=[baseline:4 league_iter25:8 rl_v0:4]  8.9s
+[ 37/300] games=  592  W/D/L=5/0/11  wr=31%(直近48%)  trans= 692  p=0.0012  v=0.1838  opps=[baseline:3 league_iter25:7 rl_v0:6]  8.0s
+[ 38/300] games=  608  W/D/L=7/0/9  wr=44%(直近46%)  trans= 766  p=-0.0024  v=0.1179  opps=[baseline:6 league_iter25:5 rl_v0:5]  8.5s
+[ 39/300] games=  624  W/D/L=3/0/13  wr=19%(直近44%)  trans= 821  p=-0.0335  v=0.1417  opps=[baseline:6 league_iter25:5 rl_v0:5]  9.1s
+[ 40/300] games=  640  W/D/L=10/0/6  wr=62%(直近48%)  trans= 803  p=-0.0188  v=0.1581  opps=[baseline:4 league_iter25:7 rl_v0:5]  9.2s
+[ 41/300] games=  656  W/D/L=7/0/9  wr=44%(直近47%)  trans= 841  p=-0.0072  v=0.1229  opps=[baseline:5 league_iter25:4 rl_v0:7]  9.7s
+[ 42/300] games=  672  W/D/L=11/0/5  wr=69%(直近49%)  trans= 877  p=0.0020  v=0.1713  opps=[baseline:6 league_iter25:5 rl_v0:5]  10.0s
+[ 43/300] games=  688  W/D/L=10/0/6  wr=62%(直近50%)  trans= 761  p=-0.0024  v=0.1292  opps=[baseline:6 league_iter25:4 rl_v0:6]  8.7s
+[ 44/300] games=  704  W/D/L=8/0/8  wr=50%(直近51%)  trans= 749  p=-0.0033  v=0.1301  opps=[baseline:2 league_iter25:9 rl_v0:5]  8.6s
+[ 45/300] games=  720  W/D/L=6/0/10  wr=38%(直近50%)  trans= 598  p=-0.0184  v=0.1849  opps=[baseline:8 league_iter25:2 rl_v0:6]  7.6s
+[ 46/300] games=  736  W/D/L=9/0/7  wr=56%(直近48%)  trans= 788  p=0.0096  v=0.1625  opps=[baseline:6 league_iter25:5 rl_v0:5]  9.4s
+[ 47/300] games=  752  W/D/L=9/0/7  wr=56%(直近50%)  trans= 802  p=0.0466  v=0.1545  opps=[baseline:5 league_iter25:7 rl_v0:4]  10.3s
+[ 48/300] games=  768  W/D/L=8/0/8  wr=50%(直近51%)  trans= 766  p=-0.0019  v=0.1471  opps=[baseline:4 league_iter25:6 rl_v0:6]  8.9s
+[ 49/300] games=  784  W/D/L=9/0/7  wr=56%(直近54%)  trans= 749  p=-0.0025  v=0.1508  opps=[baseline:7 league_iter25:6 rl_v0:3]  8.5s
+[ 50/300] games=  800  W/D/L=7/0/9  wr=44%(直近52%)  trans= 757  p=-0.0054  v=0.1177  opps=[baseline:6 league_iter25:6 rl_v0:4]  9.0s
+  => リーグ追加: league_iter50  (現在 4 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[ 51/300] games=  816  W/D/L=9/0/7  wr=56%(直近54%)  trans= 830  p=-0.0055  v=0.1241  opps=[baseline:5 league_iter25:4 league_iter50:4 rl_v0:3]  9.6s
+[ 52/300] games=  832  W/D/L=3/0/13  wr=19%(直近49%)  trans= 798  p=-0.0175  v=0.0974  opps=[baseline:4 league_iter25:5 league_iter50:3 rl_v0:4]  8.9s
+[ 53/300] games=  848  W/D/L=7/0/9  wr=44%(直近47%)  trans= 737  p=-0.0037  v=0.1442  opps=[baseline:4 league_iter25:2 league_iter50:6 rl_v0:4]  8.6s
+[ 54/300] games=  864  W/D/L=6/0/10  wr=38%(直近46%)  trans= 645  p=-0.0082  v=0.1197  opps=[baseline:3 league_iter25:4 league_iter50:5 rl_v0:4]  7.8s
+[ 55/300] games=  880  W/D/L=11/0/5  wr=69%(直近49%)  trans= 738  p=0.0002  v=0.1824  opps=[baseline:5 league_iter25:5 league_iter50:3 rl_v0:3]  9.4s
+[ 56/300] games=  896  W/D/L=9/0/7  wr=56%(直近49%)  trans= 684  p=-0.0049  v=0.1692  opps=[baseline:7 league_iter25:2 league_iter50:3 rl_v0:4]  8.5s
+[ 57/300] games=  912  W/D/L=10/0/6  wr=62%(直近49%)  trans= 596  p=-0.0055  v=0.1251  opps=[baseline:3 league_iter25:1 league_iter50:8 rl_v0:4]  7.8s
+[ 58/300] games=  928  W/D/L=9/0/7  wr=56%(直近50%)  trans= 825  p=-0.0024  v=0.1453  opps=[baseline:6 league_iter25:3 league_iter50:4 rl_v0:3]  9.9s
+[ 59/300] games=  944  W/D/L=8/0/8  wr=50%(直近49%)  trans= 753  p=-0.0023  v=0.2093  opps=[baseline:6 league_iter25:2 league_iter50:5 rl_v0:3]  9.6s
+[ 60/300] games=  960  W/D/L=8/0/8  wr=50%(直近50%)  trans= 697  p=0.0021  v=0.1688  opps=[baseline:6 league_iter25:5 league_iter50:2 rl_v0:3]  8.6s
+[ 61/300] games=  976  W/D/L=7/0/9  wr=44%(直近49%)  trans= 718  p=0.0005  v=0.1662  opps=[baseline:5 league_iter25:4 league_iter50:4 rl_v0:3]  9.3s
+[ 62/300] games=  992  W/D/L=10/0/6  wr=62%(直近53%)  trans= 707  p=-0.0019  v=0.1466  opps=[baseline:3 league_iter25:3 league_iter50:7 rl_v0:3]  8.7s
+[ 63/300] games= 1008  W/D/L=8/0/8  wr=50%(直近54%)  trans= 686  p=-0.0037  v=0.1451  opps=[baseline:3 league_iter25:6 league_iter50:5 rl_v0:2]  8.6s
+[ 64/300] games= 1024  W/D/L=8/0/8  wr=50%(直近55%)  trans= 590  p=-0.0206  v=0.1780  opps=[baseline:3 league_iter25:3 league_iter50:5 rl_v0:5]  7.5s
+[ 65/300] games= 1040  W/D/L=10/0/6  wr=62%(直近54%)  trans= 741  p=-0.0013  v=0.1946  opps=[baseline:5 league_iter25:4 league_iter50:5 rl_v0:2]  8.9s
+[ 66/300] games= 1056  W/D/L=7/0/9  wr=44%(直近53%)  trans= 763  p=-0.0026  v=0.2183  opps=[baseline:5 league_iter25:1 league_iter50:4 rl_v0:6]  8.9s
+[ 67/300] games= 1072  W/D/L=9/0/7  wr=56%(直近52%)  trans= 737  p=-0.0034  v=0.1583  opps=[baseline:6 league_iter25:2 league_iter50:3 rl_v0:5]  8.2s
+[ 68/300] games= 1088  W/D/L=12/0/4  wr=75%(直近54%)  trans= 684  p=0.0046  v=0.1476  opps=[baseline:1 league_iter25:4 league_iter50:7 rl_v0:4]  8.1s
+[ 69/300] games= 1104  W/D/L=6/0/10  wr=38%(直近53%)  trans= 882  p=-0.0072  v=0.1238  opps=[baseline:2 league_iter25:9 league_iter50:2 rl_v0:3]  10.0s
+[ 70/300] games= 1120  W/D/L=11/0/5  wr=69%(直近55%)  trans= 842  p=-0.0108  v=0.1112  opps=[baseline:6 league_iter25:4 league_iter50:4 rl_v0:2]  9.6s
+[ 71/300] games= 1136  W/D/L=12/0/4  wr=75%(直近58%)  trans= 730  p=-0.0042  v=0.1284  opps=[baseline:4 league_iter25:2 league_iter50:8 rl_v0:2]  8.2s
+[ 72/300] games= 1152  W/D/L=9/0/7  wr=56%(直近57%)  trans= 812  p=0.0223  v=0.1491  opps=[baseline:4 league_iter25:2 league_iter50:4 rl_v0:6]  8.6s
+[ 73/300] games= 1168  W/D/L=10/0/6  wr=62%(直近59%)  trans= 826  p=0.0040  v=0.1384  opps=[baseline:6 league_iter25:1 league_iter50:4 rl_v0:5]  10.0s
+[ 74/300] games= 1184  W/D/L=7/0/9  wr=44%(直近58%)  trans= 753  p=-0.0018  v=0.1877  opps=[baseline:6 league_iter25:4 league_iter50:1 rl_v0:5]  9.0s
+[ 75/300] games= 1200  W/D/L=7/0/9  wr=44%(直近56%)  trans= 689  p=0.0022  v=0.1571  opps=[baseline:2 league_iter25:6 league_iter50:7 rl_v0:1]  8.3s
+  => リーグ追加: league_iter75  (現在 5 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50', 'league_iter75'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[ 76/300] games= 1216  W/D/L=6/0/10  wr=38%(直近56%)  trans= 665  p=-0.0042  v=0.1420  opps=[league_iter25:3 league_iter50:7 league_iter75:3 rl_v0:3]  8.2s
+[ 77/300] games= 1232  W/D/L=6/0/10  wr=38%(直近54%)  trans= 601  p=0.0011  v=0.1616  opps=[league_iter25:2 league_iter50:7 league_iter75:3 rl_v0:4]  7.5s
+[ 78/300] games= 1248  W/D/L=7/0/9  wr=44%(直近51%)  trans= 710  p=-0.0051  v=0.1383  opps=[baseline:3 league_iter25:4 league_iter50:4 league_iter75:4 rl_v0:1]  8.1s
+[ 79/300] games= 1264  W/D/L=10/1/5  wr=67%(直近54%)  trans= 801  p=-0.0126  v=0.1594  opps=[baseline:4 league_iter25:2 league_iter50:4 league_iter75:2 rl_v0:4]  9.6s
+[ 80/300] games= 1280  W/D/L=6/0/10  wr=38%(直近50%)  trans= 647  p=0.0101  v=0.1802  opps=[baseline:5 league_iter50:4 league_iter75:3 rl_v0:4]  7.7s
+[ 81/300] games= 1296  W/D/L=8/0/8  wr=50%(直近48%)  trans= 658  p=-0.0043  v=0.1649  opps=[baseline:4 league_iter25:3 league_iter50:3 league_iter75:4 rl_v0:2]  8.8s
+[ 82/300] games= 1312  W/D/L=7/0/9  wr=44%(直近47%)  trans= 692  p=-0.0010  v=0.1271  opps=[baseline:6 league_iter25:3 league_iter50:3 league_iter75:2 rl_v0:2]  8.6s
+[ 83/300] games= 1328  W/D/L=5/0/11  wr=31%(直近44%)  trans= 673  p=-0.0013  v=0.1285  opps=[baseline:6 league_iter25:2 league_iter50:4 league_iter75:2 rl_v0:2]  8.9s
+[ 84/300] games= 1344  W/D/L=8/0/8  wr=50%(直近44%)  trans= 708  p=0.0005  v=0.1398  opps=[baseline:5 league_iter25:3 league_iter50:2 league_iter75:4 rl_v0:2]  8.9s
+[ 85/300] games= 1360  W/D/L=9/0/7  wr=56%(直近45%)  trans= 655  p=0.0078  v=0.1622  opps=[baseline:2 league_iter25:6 league_iter50:2 league_iter75:2 rl_v0:4]  7.5s
+[ 86/300] games= 1376  W/D/L=8/0/8  wr=50%(直近47%)  trans= 750  p=-0.0023  v=0.1170  opps=[baseline:4 league_iter25:4 league_iter50:3 league_iter75:1 rl_v0:4]  9.2s
+[ 87/300] games= 1392  W/D/L=11/0/5  wr=69%(直近50%)  trans= 825  p=-0.0076  v=0.1290  opps=[baseline:5 league_iter25:2 league_iter50:3 league_iter75:4 rl_v0:2]  9.7s
+[ 88/300] games= 1408  W/D/L=10/0/6  wr=62%(直近52%)  trans= 651  p=0.0001  v=0.1535  opps=[baseline:3 league_iter25:2 league_iter50:3 league_iter75:1 rl_v0:7]  8.3s
+[ 89/300] games= 1424  W/D/L=5/0/11  wr=31%(直近48%)  trans= 707  p=-0.0033  v=0.1528  opps=[baseline:3 league_iter25:3 league_iter50:4 league_iter75:2 rl_v0:4]  9.4s
+[ 90/300] games= 1440  W/D/L=10/0/6  wr=62%(直近51%)  trans= 688  p=-0.0035  v=0.1360  opps=[baseline:4 league_iter25:7 league_iter75:3 rl_v0:2]  7.7s
+[ 91/300] games= 1456  W/D/L=6/0/10  wr=38%(直近49%)  trans= 669  p=-0.0018  v=0.1849  opps=[baseline:4 league_iter25:2 league_iter50:1 league_iter75:4 rl_v0:5]  8.5s
+[ 92/300] games= 1472  W/D/L=6/0/10  wr=38%(直近49%)  trans= 590  p=-0.0071  v=0.1879  opps=[baseline:4 league_iter25:3 league_iter50:4 league_iter75:3 rl_v0:2]  7.0s
+[ 93/300] games= 1488  W/D/L=6/0/10  wr=38%(直近49%)  trans= 745  p=-0.0020  v=0.1619  opps=[baseline:1 league_iter25:6 league_iter50:4 league_iter75:1 rl_v0:4]  9.4s
+[ 94/300] games= 1504  W/D/L=10/0/6  wr=62%(直近51%)  trans= 680  p=-0.0010  v=0.1663  opps=[baseline:5 league_iter25:2 league_iter50:3 league_iter75:5 rl_v0:1]  7.5s
+[ 95/300] games= 1520  W/D/L=7/0/9  wr=44%(直近49%)  trans= 833  p=-0.0006  v=0.1437  opps=[baseline:3 league_iter25:4 league_iter50:2 league_iter75:3 rl_v0:4]  10.0s
+[ 96/300] games= 1536  W/D/L=10/0/6  wr=62%(直近51%)  trans= 718  p=-0.0006  v=0.1974  opps=[baseline:6 league_iter25:3 league_iter50:1 league_iter75:2 rl_v0:4]  10.1s
+[ 97/300] games= 1552  W/D/L=7/0/9  wr=44%(直近48%)  trans= 855  p=-0.0106  v=0.1269  opps=[baseline:3 league_iter25:4 league_iter50:6 league_iter75:2 rl_v0:1]  11.2s
+[ 98/300] games= 1568  W/D/L=10/0/6  wr=62%(直近48%)  trans= 801  p=-0.0011  v=0.1508  opps=[baseline:4 league_iter25:2 league_iter50:6 league_iter75:3 rl_v0:1]  9.5s
+[ 99/300] games= 1584  W/D/L=6/0/10  wr=38%(直近49%)  trans= 711  p=-0.0039  v=0.1471  opps=[baseline:2 league_iter25:8 league_iter50:2 league_iter75:3 rl_v0:1]  10.5s
+[100/300] games= 1600  W/D/L=6/0/10  wr=38%(直近46%)  trans= 780  p=-0.0270  v=0.1263  opps=[baseline:5 league_iter25:3 league_iter50:3 league_iter75:2 rl_v0:3]  10.0s
+  => リーグ追加: league_iter100  (現在 6 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50', 'league_iter75', 'league_iter100'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[101/300] games= 1616  W/D/L=8/0/8  wr=50%(直近48%)  trans= 817  p=0.0346  v=0.1552  opps=[league_iter100:3 league_iter25:2 league_iter50:7 league_iter75:3 rl_v0:1]  9.6s
+[102/300] games= 1632  W/D/L=6/0/10  wr=38%(直近48%)  trans= 551  p=0.0245  v=0.1534  opps=[baseline:2 league_iter100:2 league_iter25:3 league_iter50:3 league_iter75:2 rl_v0:4]  6.7s
+[103/300] games= 1648  W/D/L=12/0/4  wr=75%(直近51%)  trans= 777  p=0.0527  v=0.1351  opps=[baseline:3 league_iter100:3 league_iter25:2 league_iter50:2 league_iter75:1 rl_v0:5]  9.4s
+[104/300] games= 1664  W/D/L=9/0/7  wr=56%(直近51%)  trans= 716  p=-0.0040  v=0.1474  opps=[baseline:3 league_iter100:1 league_iter25:4 league_iter50:2 league_iter75:2 rl_v0:4]  9.4s
+[105/300] games= 1680  W/D/L=6/0/10  wr=38%(直近50%)  trans= 720  p=-0.0020  v=0.1682  opps=[baseline:3 league_iter100:2 league_iter25:2 league_iter50:2 league_iter75:2 rl_v0:5]  8.8s
+[106/300] games= 1696  W/D/L=7/0/9  wr=44%(直近48%)  trans= 778  p=-0.0126  v=0.1385  opps=[baseline:3 league_iter100:2 league_iter25:2 league_iter50:2 league_iter75:4 rl_v0:3]  9.0s
+[107/300] games= 1712  W/D/L=10/0/6  wr=62%(直近50%)  trans= 719  p=-0.0001  v=0.1464  opps=[baseline:5 league_iter100:2 league_iter25:4 league_iter50:2 league_iter75:2 rl_v0:1]  8.9s
+[108/300] games= 1728  W/D/L=9/0/7  wr=56%(直近49%)  trans= 658  p=0.0019  v=0.1238  opps=[baseline:2 league_iter100:1 league_iter25:3 league_iter50:2 league_iter75:4 rl_v0:4]  8.3s
+[109/300] games= 1744  W/D/L=7/0/9  wr=44%(直近50%)  trans= 797  p=0.0018  v=0.1690  opps=[baseline:1 league_iter100:3 league_iter25:2 league_iter50:3 league_iter75:4 rl_v0:3]  9.4s
+[110/300] games= 1760  W/D/L=6/0/10  wr=38%(直近50%)  trans= 768  p=-0.0021  v=0.1946  opps=[baseline:3 league_iter100:2 league_iter25:3 league_iter50:4 league_iter75:2 rl_v0:2]  9.5s
+[111/300] games= 1776  W/D/L=11/0/5  wr=69%(直近52%)  trans= 730  p=-0.0022  v=0.1136  opps=[baseline:1 league_iter100:3 league_iter25:3 league_iter50:2 league_iter75:6 rl_v0:1]  9.8s
+[112/300] games= 1792  W/D/L=7/0/9  wr=44%(直近52%)  trans= 621  p=0.0108  v=0.2092  opps=[baseline:2 league_iter100:3 league_iter25:3 league_iter50:3 league_iter75:3 rl_v0:2]  8.8s
+[113/300] games= 1808  W/D/L=7/0/9  wr=44%(直近49%)  trans= 778  p=-0.0475  v=0.1769  opps=[baseline:3 league_iter100:5 league_iter25:2 league_iter50:2 league_iter75:2 rl_v0:2]  10.5s
+[114/300] games= 1824  W/D/L=5/0/11  wr=31%(直近47%)  trans= 662  p=-0.0014  v=0.1548  opps=[baseline:6 league_iter25:3 league_iter50:1 league_iter75:3 rl_v0:3]  9.2s
+[115/300] games= 1840  W/D/L=7/0/9  wr=44%(直近48%)  trans= 661  p=-0.0089  v=0.1464  opps=[league_iter100:2 league_iter25:5 league_iter50:2 league_iter75:3 rl_v0:4]  8.1s
+[116/300] games= 1856  W/D/L=8/0/8  wr=50%(直近48%)  trans= 641  p=-0.0067  v=0.1691  opps=[baseline:1 league_iter100:6 league_iter25:1 league_iter50:3 league_iter75:2 rl_v0:3]  8.8s
+[117/300] games= 1872  W/D/L=8/0/8  wr=50%(直近47%)  trans= 825  p=0.0011  v=0.1394  opps=[baseline:1 league_iter100:8 league_iter25:1 league_iter50:2 league_iter75:2 rl_v0:2]  10.8s
+[118/300] games= 1888  W/D/L=10/0/6  wr=62%(直近48%)  trans= 752  p=-0.0019  v=0.1225  opps=[baseline:6 league_iter100:3 league_iter25:2 league_iter50:2 rl_v0:3]  9.9s
+[119/300] games= 1904  W/D/L=9/0/7  wr=56%(直近49%)  trans= 675  p=0.0016  v=0.1307  opps=[baseline:2 league_iter100:3 league_iter50:4 league_iter75:6 rl_v0:1]  8.1s
+[120/300] games= 1920  W/D/L=7/0/9  wr=44%(直近49%)  trans= 751  p=-0.0032  v=0.1618  opps=[baseline:2 league_iter100:2 league_iter25:2 league_iter50:2 league_iter75:4 rl_v0:4]  10.3s
+[121/300] games= 1936  W/D/L=13/0/3  wr=81%(直近51%)  trans= 766  p=-0.0014  v=0.1626  opps=[baseline:4 league_iter100:2 league_iter25:2 league_iter50:4 league_iter75:3 rl_v0:1]  11.0s
+[122/300] games= 1952  W/D/L=6/0/10  wr=38%(直近50%)  trans= 834  p=0.0092  v=0.0998  opps=[baseline:4 league_iter100:2 league_iter25:4 league_iter50:2 league_iter75:3 rl_v0:1]  10.3s
+[123/300] games= 1968  W/D/L=7/0/9  wr=44%(直近50%)  trans= 742  p=-0.0017  v=0.1709  opps=[league_iter100:5 league_iter25:3 league_iter50:1 league_iter75:2 rl_v0:5]  9.5s
+[124/300] games= 1984  W/D/L=12/0/4  wr=75%(直近54%)  trans= 684  p=-0.0036  v=0.1466  opps=[baseline:4 league_iter100:3 league_iter25:3 league_iter50:3 league_iter75:1 rl_v0:2]  9.3s
+[125/300] games= 2000  W/D/L=9/1/6  wr=60%(直近56%)  trans= 762  p=-0.0016  v=0.1763  opps=[baseline:5 league_iter100:2 league_iter25:1 league_iter50:3 league_iter75:2 rl_v0:3]  9.5s
+  => リーグ追加: league_iter125  (現在 7 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50', 'league_iter75', 'league_iter100', 'league_iter125'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[126/300] games= 2016  W/D/L=5/0/11  wr=31%(直近54%)  trans= 669  p=-0.0065  v=0.1532  opps=[baseline:3 league_iter100:1 league_iter125:5 league_iter25:2 league_iter50:2 rl_v0:3]  8.1s
+[127/300] games= 2032  W/D/L=8/0/8  wr=50%(直近54%)  trans= 634  p=-0.0243  v=0.1635  opps=[baseline:3 league_iter100:1 league_iter25:2 league_iter50:2 league_iter75:2 rl_v0:6]  8.4s
+[128/300] games= 2048  W/D/L=6/1/9  wr=40%(直近52%)  trans= 801  p=0.0133  v=0.1280  opps=[baseline:1 league_iter100:3 league_iter125:2 league_iter50:4 league_iter75:5 rl_v0:1]  10.0s
+[129/300] games= 2064  W/D/L=9/0/7  wr=56%(直近52%)  trans= 791  p=0.0012  v=0.1600  opps=[baseline:2 league_iter100:3 league_iter125:2 league_iter25:2 league_iter50:3 league_iter75:3 rl_v0:1]  9.8s
+[130/300] games= 2080  W/D/L=9/0/7  wr=56%(直近53%)  trans= 719  p=-0.0025  v=0.1660  opps=[baseline:1 league_iter100:3 league_iter125:2 league_iter25:3 league_iter50:1 league_iter75:3 rl_v0:3]  8.5s
+[131/300] games= 2096  W/D/L=9/0/7  wr=56%(直近51%)  trans= 722  p=-0.0016  v=0.1613  opps=[baseline:4 league_iter125:2 league_iter25:3 league_iter50:1 league_iter75:3 rl_v0:3]  8.2s
+[132/300] games= 2112  W/D/L=7/0/9  wr=44%(直近51%)  trans= 738  p=-0.0063  v=0.1233  opps=[baseline:5 league_iter100:6 league_iter125:1 league_iter25:1 league_iter50:1 league_iter75:2]  9.2s
+[133/300] games= 2128  W/D/L=8/0/8  wr=50%(直近52%)  trans= 630  p=-0.0077  v=0.1750  opps=[baseline:2 league_iter100:4 league_iter25:2 league_iter75:4 rl_v0:4]  7.6s
+[134/300] games= 2144  W/D/L=9/0/7  wr=56%(直近50%)  trans= 767  p=-0.0026  v=0.1189  opps=[baseline:1 league_iter100:2 league_iter125:4 league_iter25:3 league_iter50:1 league_iter75:4 rl_v0:1]  9.0s
+[135/300] games= 2160  W/D/L=10/0/6  wr=62%(直近50%)  trans= 771  p=0.0790  v=0.1528  opps=[baseline:4 league_iter100:2 league_iter25:2 league_iter50:3 league_iter75:2 rl_v0:3]  9.0s
+[136/300] games= 2176  W/D/L=11/0/5  wr=69%(直近54%)  trans= 724  p=-0.0013  v=0.1394  opps=[baseline:3 league_iter100:1 league_iter125:4 league_iter25:4 league_iter50:1 league_iter75:2 rl_v0:1]  8.3s
+[137/300] games= 2192  W/D/L=7/0/9  wr=44%(直近53%)  trans= 712  p=-0.0035  v=0.1917  opps=[baseline:1 league_iter100:4 league_iter125:1 league_iter25:3 league_iter50:3 league_iter75:2 rl_v0:2]  9.0s
+[138/300] games= 2208  W/D/L=7/0/9  wr=44%(直近54%)  trans= 753  p=-0.0038  v=0.1450  opps=[baseline:1 league_iter125:3 league_iter25:3 league_iter50:4 league_iter75:3 rl_v0:2]  8.8s
+[139/300] games= 2224  W/D/L=5/0/11  wr=31%(直近51%)  trans= 693  p=-0.0039  v=0.1289  opps=[baseline:2 league_iter100:5 league_iter125:1 league_iter25:3 league_iter50:3 rl_v0:2]  8.5s
+[140/300] games= 2240  W/D/L=9/0/7  wr=56%(直近51%)  trans= 721  p=-0.0000  v=0.1452  opps=[baseline:1 league_iter100:1 league_iter25:2 league_iter50:2 league_iter75:7 rl_v0:3]  8.2s
+[141/300] games= 2256  W/D/L=7/0/9  wr=44%(直近50%)  trans= 792  p=-0.0105  v=0.1578  opps=[league_iter100:3 league_iter125:1 league_iter50:5 league_iter75:4 rl_v0:3]  9.7s
+[142/300] games= 2272  W/D/L=10/0/6  wr=62%(直近52%)  trans= 824  p=0.0036  v=0.1051  opps=[league_iter100:2 league_iter125:3 league_iter25:4 league_iter50:4 league_iter75:3]  9.5s
+[143/300] games= 2288  W/D/L=11/0/5  wr=69%(直近54%)  trans= 780  p=-0.0275  v=0.1928  opps=[league_iter100:2 league_iter125:1 league_iter25:2 league_iter50:6 league_iter75:3 rl_v0:2]  9.4s
+[144/300] games= 2304  W/D/L=7/0/9  wr=44%(直近52%)  trans= 754  p=-0.0031  v=0.1402  opps=[baseline:5 league_iter100:3 league_iter125:2 league_iter50:2 league_iter75:2 rl_v0:2]  8.4s
+[145/300] games= 2320  W/D/L=2/0/14  wr=12%(直近48%)  trans= 699  p=0.0005  v=0.1119  opps=[baseline:3 league_iter125:4 league_iter25:1 league_iter50:6 league_iter75:1 rl_v0:1]  8.3s
+[146/300] games= 2336  W/D/L=8/0/8  wr=50%(直近46%)  trans= 749  p=-0.0013  v=0.1726  opps=[baseline:3 league_iter100:4 league_iter25:5 league_iter50:3 league_iter75:1]  8.6s
+[147/300] games= 2352  W/D/L=10/0/6  wr=62%(直近48%)  trans= 788  p=0.0037  v=0.1251  opps=[baseline:2 league_iter100:2 league_iter125:2 league_iter25:2 league_iter50:7 league_iter75:1]  9.8s
+[148/300] games= 2368  W/D/L=6/0/10  wr=38%(直近47%)  trans= 900  p=-0.0062  v=0.1248  opps=[baseline:2 league_iter100:1 league_iter125:2 league_iter25:2 league_iter50:2 league_iter75:3 rl_v0:4]  10.8s
+[149/300] games= 2384  W/D/L=6/0/10  wr=38%(直近48%)  trans= 720  p=-0.0009  v=0.1580  opps=[baseline:1 league_iter100:2 league_iter125:3 league_iter25:4 league_iter50:3 rl_v0:3]  8.2s
+[150/300] games= 2400  W/D/L=10/0/6  wr=62%(直近48%)  trans= 698  p=-0.0032  v=0.1776  opps=[baseline:3 league_iter100:4 league_iter125:1 league_iter25:2 league_iter50:1 league_iter75:2 rl_v0:3]  8.2s
+  => リーグ追加: league_iter150  (現在 8 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50', 'league_iter75', 'league_iter100', 'league_iter125', 'league_iter150'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[151/300] games= 2416  W/D/L=4/0/12  wr=25%(直近46%)  trans= 813  p=-0.0116  v=0.1140  opps=[baseline:1 league_iter100:2 league_iter125:1 league_iter150:2 league_iter25:3 league_iter75:3 rl_v0:4]  9.1s
+[152/300] games= 2432  W/D/L=9/0/7  wr=56%(直近46%)  trans= 610  p=-0.0130  v=0.1746  opps=[baseline:1 league_iter100:2 league_iter125:2 league_iter25:2 league_iter50:3 league_iter75:4 rl_v0:2]  7.3s
+[153/300] games= 2448  W/D/L=6/0/10  wr=38%(直近42%)  trans= 732  p=-0.0026  v=0.1753  opps=[baseline:5 league_iter100:1 league_iter125:3 league_iter150:4 league_iter50:1 league_iter75:1 rl_v0:1]  8.4s
+[154/300] games= 2464  W/D/L=7/0/9  wr=44%(直近42%)  trans= 648  p=0.0057  v=0.1584  opps=[baseline:2 league_iter100:3 league_iter150:1 league_iter25:5 league_iter75:4 rl_v0:1]  8.1s
+[155/300] games= 2480  W/D/L=3/1/12  wr=20%(直近43%)  trans= 707  p=-0.0023  v=0.1228  opps=[baseline:3 league_iter100:3 league_iter125:1 league_iter150:2 league_iter25:1 league_iter75:1 rl_v0:5]  8.5s
+[156/300] games= 2496  W/D/L=8/0/8  wr=50%(直近43%)  trans= 785  p=0.0120  v=0.1186  opps=[league_iter100:5 league_iter150:1 league_iter25:3 league_iter75:3 rl_v0:4]  9.2s
+[157/300] games= 2512  W/D/L=6/0/10  wr=38%(直近41%)  trans= 807  p=0.0279  v=0.1202  opps=[baseline:5 league_iter125:2 league_iter150:2 league_iter25:1 league_iter50:2 league_iter75:2 rl_v0:2]  10.0s
+[158/300] games= 2528  W/D/L=10/0/6  wr=62%(直近43%)  trans= 648  p=-0.0134  v=0.1459  opps=[baseline:1 league_iter125:2 league_iter150:4 league_iter25:2 league_iter75:4 rl_v0:3]  7.4s
+[159/300] games= 2544  W/D/L=6/0/10  wr=38%(直近43%)  trans= 598  p=-0.0006  v=0.1904  opps=[league_iter125:3 league_iter150:2 league_iter25:1 league_iter50:4 league_iter75:6]  7.8s
+[160/300] games= 2560  W/D/L=11/0/5  wr=69%(直近44%)  trans= 750  p=-0.0018  v=0.1540  opps=[baseline:5 league_iter100:2 league_iter125:1 league_iter150:1 league_iter25:3 league_iter50:2 league_iter75:1 rl_v0:1]  9.1s
+[161/300] games= 2576  W/D/L=2/0/14  wr=12%(直近43%)  trans= 792  p=0.0057  v=0.1688  opps=[baseline:1 league_iter100:4 league_iter125:2 league_iter50:1 league_iter75:3 rl_v0:5]  9.3s
+[162/300] games= 2592  W/D/L=7/0/9  wr=44%(直近41%)  trans= 626  p=0.0032  v=0.1221  opps=[baseline:4 league_iter100:3 league_iter150:3 league_iter25:1 league_iter50:3 league_iter75:1 rl_v0:1]  7.4s
+[163/300] games= 2608  W/D/L=5/0/11  wr=31%(直近41%)  trans= 656  p=-0.0083  v=0.1175  opps=[league_iter100:2 league_iter125:3 league_iter150:2 league_iter25:2 league_iter50:4 league_iter75:2 rl_v0:1]  8.3s
+[164/300] games= 2624  W/D/L=10/0/6  wr=62%(直近43%)  trans= 769  p=0.0040  v=0.2081  opps=[baseline:1 league_iter100:1 league_iter125:1 league_iter150:3 league_iter25:1 league_iter50:6 league_iter75:3]  9.0s
+[165/300] games= 2640  W/D/L=5/0/11  wr=31%(直近44%)  trans= 678  p=0.0022  v=0.1417  opps=[baseline:4 league_iter100:2 league_iter125:2 league_iter150:1 league_iter25:2 league_iter75:2 rl_v0:3]  7.6s
+[166/300] games= 2656  W/D/L=9/0/7  wr=56%(直近44%)  trans= 666  p=-0.0029  v=0.1496  opps=[league_iter100:2 league_iter125:2 league_iter150:3 league_iter25:3 league_iter50:3 league_iter75:1 rl_v0:2]  7.9s
+[167/300] games= 2672  W/D/L=10/0/6  wr=62%(直近47%)  trans= 678  p=-0.0002  v=0.1849  opps=[baseline:1 league_iter100:2 league_iter150:5 league_iter25:3 league_iter50:2 league_iter75:1 rl_v0:2]  8.0s
+[168/300] games= 2688  W/D/L=7/1/8  wr=47%(直近45%)  trans= 694  p=-0.0028  v=0.1573  opps=[league_iter100:4 league_iter125:1 league_iter150:3 league_iter25:1 league_iter50:2 league_iter75:4 rl_v0:1]  8.1s
+[169/300] games= 2704  W/D/L=10/0/6  wr=62%(直近48%)  trans= 709  p=-0.0044  v=0.1567  opps=[baseline:3 league_iter100:2 league_iter125:1 league_iter150:1 league_iter25:1 league_iter50:3 league_iter75:3 rl_v0:2]  8.2s
+[170/300] games= 2720  W/D/L=5/0/11  wr=31%(直近44%)  trans= 730  p=-0.0015  v=0.1698  opps=[baseline:3 league_iter100:1 league_iter125:2 league_iter150:2 league_iter25:2 league_iter75:2 rl_v0:4]  8.7s
+[171/300] games= 2736  W/D/L=7/0/9  wr=44%(直近47%)  trans= 773  p=-0.0153  v=0.1757  opps=[baseline:1 league_iter125:4 league_iter150:2 league_iter25:3 league_iter50:2 league_iter75:2 rl_v0:2]  8.9s
+[172/300] games= 2752  W/D/L=7/0/9  wr=44%(直近47%)  trans= 731  p=-0.0033  v=0.1690  opps=[baseline:4 league_iter100:3 league_iter125:1 league_iter150:3 league_iter25:2 league_iter50:2 league_iter75:1]  8.6s
+[173/300] games= 2768  W/D/L=9/0/7  wr=56%(直近50%)  trans= 799  p=-0.0676  v=0.1442  opps=[baseline:2 league_iter100:2 league_iter150:2 league_iter25:2 league_iter50:2 league_iter75:2 rl_v0:4]  9.1s
+[174/300] games= 2784  W/D/L=12/0/4  wr=75%(直近51%)  trans= 752  p=-0.0031  v=0.1327  opps=[baseline:5 league_iter125:3 league_iter150:3 league_iter25:4 league_iter75:1]  8.4s
+[175/300] games= 2800  W/D/L=6/0/10  wr=38%(直近52%)  trans= 708  p=-0.0004  v=0.1558  opps=[baseline:1 league_iter100:1 league_iter125:2 league_iter25:3 league_iter50:3 league_iter75:4 rl_v0:2]  8.3s
+  => リーグ追加: league_iter175  (現在 9 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50', 'league_iter75', 'league_iter100', 'league_iter125', 'league_iter150', 'league_iter175'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[176/300] games= 2816  W/D/L=7/0/9  wr=44%(直近50%)  trans= 819  p=-0.0137  v=0.1403  opps=[baseline:2 league_iter100:1 league_iter125:1 league_iter150:1 league_iter175:3 league_iter25:1 league_iter50:2 league_iter75:2 rl_v0:3]  9.6s
+[177/300] games= 2832  W/D/L=8/0/8  wr=50%(直近49%)  trans= 618  p=-0.0031  v=0.1434  opps=[baseline:4 league_iter100:1 league_iter125:3 league_iter150:3 league_iter75:2 rl_v0:3]  7.5s
+[178/300] games= 2848  W/D/L=7/0/9  wr=44%(直近49%)  trans= 846  p=0.0039  v=0.1473  opps=[baseline:1 league_iter100:3 league_iter125:4 league_iter150:2 league_iter175:1 league_iter50:2 league_iter75:2 rl_v0:1]  9.3s
+[179/300] games= 2864  W/D/L=8/1/7  wr=53%(直近48%)  trans= 780  p=-0.0426  v=0.1512  opps=[baseline:3 league_iter100:4 league_iter125:1 league_iter150:1 league_iter25:1 league_iter50:2 league_iter75:1 rl_v0:3]  9.1s
+[180/300] games= 2880  W/D/L=5/0/11  wr=31%(直近48%)  trans= 714  p=-0.0025  v=0.1483  opps=[baseline:5 league_iter125:3 league_iter150:2 league_iter175:1 league_iter25:1 league_iter50:1 league_iter75:1 rl_v0:2]  8.1s
+[181/300] games= 2896  W/D/L=7/0/9  wr=44%(直近48%)  trans= 804  p=0.0157  v=0.1408  opps=[baseline:2 league_iter100:2 league_iter125:2 league_iter150:1 league_iter175:3 league_iter25:2 rl_v0:4]  9.6s
+[182/300] games= 2912  W/D/L=7/0/9  wr=44%(直近48%)  trans= 765  p=-0.0032  v=0.1158  opps=[baseline:2 league_iter100:2 league_iter125:1 league_iter150:2 league_iter175:3 league_iter25:1 league_iter50:2 league_iter75:3]  8.2s
+[183/300] games= 2928  W/D/L=9/0/7  wr=56%(直近48%)  trans= 664  p=-0.0022  v=0.1554  opps=[baseline:1 league_iter100:1 league_iter125:4 league_iter150:2 league_iter175:1 league_iter25:1 league_iter50:1 league_iter75:3 rl_v0:2]  7.8s
+[184/300] games= 2944  W/D/L=6/0/10  wr=38%(直近44%)  trans= 716  p=-0.0014  v=0.1291  opps=[baseline:2 league_iter100:1 league_iter125:3 league_iter150:1 league_iter175:2 league_iter25:3 league_iter50:3 league_iter75:1]  8.1s
+[185/300] games= 2960  W/D/L=4/0/12  wr=25%(直近43%)  trans= 659  p=-0.0049  v=0.1325  opps=[baseline:1 league_iter100:2 league_iter125:1 league_iter150:2 league_iter175:5 league_iter25:2 league_iter75:1 rl_v0:2]  7.7s
+[186/300] games= 2976  W/D/L=6/1/9  wr=40%(直近42%)  trans= 608  p=0.0074  v=0.1311  opps=[baseline:2 league_iter100:2 league_iter125:1 league_iter25:4 league_iter50:4 league_iter75:2 rl_v0:1]  7.7s
+[187/300] games= 2992  W/D/L=12/0/4  wr=75%(直近45%)  trans= 725  p=-0.0015  v=0.1679  opps=[baseline:4 league_iter100:3 league_iter125:2 league_iter150:2 league_iter175:2 league_iter25:2 rl_v0:1]  8.4s
+[188/300] games= 3008  W/D/L=6/0/10  wr=38%(直近44%)  trans= 729  p=-0.0017  v=0.2121  opps=[baseline:3 league_iter125:5 league_iter150:3 league_iter175:1 league_iter25:1 league_iter75:1 rl_v0:2]  8.1s
+[189/300] games= 3024  W/D/L=4/0/12  wr=25%(直近42%)  trans= 630  p=0.0045  v=0.2165  opps=[baseline:2 league_iter100:1 league_iter125:2 league_iter150:3 league_iter175:4 league_iter25:1 league_iter50:2 rl_v0:1]  7.4s
+[190/300] games= 3040  W/D/L=7/0/9  wr=44%(直近43%)  trans= 755  p=-0.0033  v=0.1884  opps=[baseline:5 league_iter125:3 league_iter150:1 league_iter25:3 rl_v0:4]  8.6s
+[191/300] games= 3056  W/D/L=6/0/10  wr=38%(直近42%)  trans= 721  p=0.0000  v=0.1315  opps=[baseline:3 league_iter100:3 league_iter125:1 league_iter150:1 league_iter175:1 league_iter25:1 league_iter50:5 rl_v0:1]  8.5s
+[192/300] games= 3072  W/D/L=9/0/7  wr=56%(直近43%)  trans= 668  p=-0.0036  v=0.1558  opps=[baseline:2 league_iter125:3 league_iter150:2 league_iter175:2 league_iter25:1 league_iter50:2 league_iter75:3 rl_v0:1]  7.7s
+[193/300] games= 3088  W/D/L=5/0/11  wr=31%(直近41%)  trans= 613  p=-0.0079  v=0.1438  opps=[baseline:3 league_iter125:3 league_iter150:2 league_iter25:3 league_iter75:2 rl_v0:3]  7.4s
+[194/300] games= 3104  W/D/L=5/0/11  wr=31%(直近40%)  trans= 694  p=0.0046  v=0.1721  opps=[baseline:1 league_iter100:1 league_iter125:1 league_iter175:1 league_iter25:6 league_iter50:2 league_iter75:2 rl_v0:2]  7.8s
+[195/300] games= 3120  W/D/L=9/0/7  wr=56%(直近43%)  trans= 709  p=-0.0046  v=0.1573  opps=[baseline:3 league_iter125:1 league_iter175:4 league_iter25:3 league_iter50:2 league_iter75:2 rl_v0:1]  8.2s
+[196/300] games= 3136  W/D/L=8/0/8  wr=50%(直近44%)  trans= 665  p=-0.0008  v=0.1686  opps=[baseline:1 league_iter100:2 league_iter125:3 league_iter150:3 league_iter175:2 league_iter50:3 league_iter75:1 rl_v0:1]  7.8s
+[197/300] games= 3152  W/D/L=7/0/9  wr=44%(直近41%)  trans= 750  p=-0.0010  v=0.1291  opps=[baseline:1 league_iter100:1 league_iter125:3 league_iter150:2 league_iter175:1 league_iter25:3 league_iter50:1 league_iter75:3 rl_v0:1]  8.8s
+[198/300] games= 3168  W/D/L=7/0/9  wr=44%(直近42%)  trans= 751  p=-0.0035  v=0.1508  opps=[league_iter100:1 league_iter125:5 league_iter150:4 league_iter25:4 league_iter50:2]  8.5s
+[199/300] games= 3184  W/D/L=7/1/8  wr=47%(直近44%)  trans= 788  p=-0.0409  v=0.0986  opps=[baseline:2 league_iter100:1 league_iter125:2 league_iter150:4 league_iter175:1 league_iter25:1 league_iter50:1 league_iter75:3 rl_v0:1]  9.4s
+[200/300] games= 3200  W/D/L=9/0/7  wr=56%(直近45%)  trans= 698  p=0.0052  v=0.1851  opps=[baseline:3 league_iter100:3 league_iter125:4 league_iter150:2 league_iter175:1 league_iter75:2 rl_v0:1]  8.3s
+  => リーグ追加: league_iter200  (現在 10 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50', 'league_iter75', 'league_iter100', 'league_iter125', 'league_iter150', 'league_iter175', 'league_iter200'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[201/300] games= 3216  W/D/L=4/0/12  wr=25%(直近44%)  trans= 686  p=-0.0020  v=0.2378  opps=[league_iter100:1 league_iter125:3 league_iter150:1 league_iter175:3 league_iter200:2 league_iter25:1 league_iter50:3 rl_v0:2]  8.1s
+[202/300] games= 3232  W/D/L=8/0/8  wr=50%(直近43%)  trans= 527  p=0.0591  v=0.2135  opps=[baseline:4 league_iter100:2 league_iter125:1 league_iter175:1 league_iter200:1 league_iter50:5 league_iter75:1 rl_v0:1]  6.5s
+[203/300] games= 3248  W/D/L=5/0/11  wr=31%(直近43%)  trans= 689  p=0.0042  v=0.1500  opps=[baseline:1 league_iter100:2 league_iter150:2 league_iter175:2 league_iter25:3 league_iter50:3 league_iter75:1 rl_v0:2]  8.0s
+[204/300] games= 3264  W/D/L=5/1/10  wr=33%(直近44%)  trans= 682  p=-0.0044  v=0.1368  opps=[league_iter100:1 league_iter150:2 league_iter175:3 league_iter200:4 league_iter25:2 league_iter50:1 league_iter75:2 rl_v0:1]  8.4s
+[205/300] games= 3280  W/D/L=8/0/8  wr=50%(直近43%)  trans= 833  p=-0.0191  v=0.1581  opps=[baseline:2 league_iter100:5 league_iter175:3 league_iter200:1 league_iter50:1 league_iter75:3 rl_v0:1]  9.4s
+[206/300] games= 3296  W/D/L=7/0/9  wr=44%(直近42%)  trans= 877  p=-0.0122  v=0.1255  opps=[baseline:1 league_iter100:1 league_iter125:3 league_iter175:1 league_iter200:2 league_iter25:3 league_iter50:1 league_iter75:1 rl_v0:3]  9.8s
+[207/300] games= 3312  W/D/L=7/0/9  wr=44%(直近42%)  trans= 721  p=-0.0067  v=0.1441  opps=[baseline:3 league_iter100:1 league_iter125:2 league_iter150:2 league_iter200:1 league_iter25:1 league_iter50:3 league_iter75:3]  8.5s
+[208/300] games= 3328  W/D/L=7/0/9  wr=44%(直近42%)  trans= 686  p=-0.0001  v=0.1327  opps=[baseline:1 league_iter100:3 league_iter125:1 league_iter150:3 league_iter200:1 league_iter25:2 league_iter50:2 league_iter75:3]  7.8s
+[209/300] games= 3344  W/D/L=9/0/7  wr=56%(直近43%)  trans= 809  p=0.0003  v=0.1401  opps=[baseline:2 league_iter125:1 league_iter150:2 league_iter200:2 league_iter25:3 league_iter75:5 rl_v0:1]  9.0s
+[210/300] games= 3360  W/D/L=8/0/8  wr=50%(直近43%)  trans= 743  p=-0.0019  v=0.1682  opps=[baseline:1 league_iter125:2 league_iter150:1 league_iter200:5 league_iter50:2 league_iter75:2 rl_v0:3]  8.2s
+[211/300] games= 3376  W/D/L=9/0/7  wr=56%(直近46%)  trans= 753  p=-0.0022  v=0.1467  opps=[baseline:1 league_iter100:2 league_iter125:1 league_iter175:1 league_iter200:3 league_iter25:2 league_iter50:5 league_iter75:1]  8.5s
+[212/300] games= 3392  W/D/L=7/0/9  wr=44%(直近45%)  trans= 625  p=-0.0078  v=0.1269  opps=[baseline:2 league_iter100:2 league_iter150:2 league_iter175:1 league_iter200:4 league_iter25:1 league_iter50:3 league_iter75:1]  7.6s
+[213/300] games= 3408  W/D/L=9/0/7  wr=56%(直近48%)  trans= 857  p=-0.0081  v=0.1629  opps=[baseline:1 league_iter125:4 league_iter150:2 league_iter175:2 league_iter200:2 league_iter50:2 league_iter75:1 rl_v0:2]  9.4s
+[214/300] games= 3424  W/D/L=9/0/7  wr=56%(直近50%)  trans= 779  p=0.0715  v=0.1546  opps=[baseline:1 league_iter125:1 league_iter150:6 league_iter200:1 league_iter25:2 league_iter50:1 league_iter75:2 rl_v0:2]  8.9s
+[215/300] games= 3440  W/D/L=8/0/8  wr=50%(直近50%)  trans= 657  p=0.0002  v=0.1703  opps=[baseline:2 league_iter100:2 league_iter125:1 league_iter175:3 league_iter200:2 league_iter25:1 league_iter50:1 league_iter75:2 rl_v0:2]  7.7s
+[216/300] games= 3456  W/D/L=7/0/9  wr=44%(直近50%)  trans= 698  p=-0.0056  v=0.1613  opps=[baseline:1 league_iter100:2 league_iter125:1 league_iter150:2 league_iter200:3 league_iter25:1 league_iter50:2 league_iter75:3 rl_v0:1]  7.9s
+[217/300] games= 3472  W/D/L=5/0/11  wr=31%(直近49%)  trans= 735  p=0.0003  v=0.1714  opps=[baseline:1 league_iter125:3 league_iter150:2 league_iter200:3 league_iter25:3 league_iter50:3 rl_v0:1]  8.4s
+[218/300] games= 3488  W/D/L=6/0/10  wr=38%(直近48%)  trans= 733  p=-0.0030  v=0.1589  opps=[baseline:2 league_iter100:2 league_iter150:4 league_iter175:2 league_iter200:1 league_iter25:1 league_iter50:2 rl_v0:2]  8.4s
+[219/300] games= 3504  W/D/L=7/0/9  wr=44%(直近47%)  trans= 796  p=0.0170  v=0.1458  opps=[baseline:2 league_iter100:4 league_iter125:2 league_iter25:3 league_iter50:2 league_iter75:2 rl_v0:1]  9.2s
+[220/300] games= 3520  W/D/L=9/0/7  wr=56%(直近48%)  trans= 812  p=0.0033  v=0.1531  opps=[baseline:2 league_iter125:1 league_iter175:2 league_iter25:4 league_iter50:5 league_iter75:1 rl_v0:1]  9.4s
+[221/300] games= 3536  W/D/L=6/0/10  wr=38%(直近46%)  trans= 760  p=-0.0006  v=0.1647  opps=[league_iter100:2 league_iter150:1 league_iter175:1 league_iter200:2 league_iter25:2 league_iter50:3 league_iter75:4 rl_v0:1]  8.8s
+[222/300] games= 3552  W/D/L=7/0/9  wr=44%(直近46%)  trans= 715  p=-0.0052  v=0.1360  opps=[baseline:1 league_iter100:5 league_iter125:3 league_iter150:1 league_iter200:4 league_iter25:1 rl_v0:1]  8.4s
+[223/300] games= 3568  W/D/L=8/0/8  wr=50%(直近45%)  trans= 843  p=0.0064  v=0.1269  opps=[baseline:2 league_iter100:1 league_iter150:1 league_iter175:5 league_iter200:3 league_iter25:2 league_iter75:1 rl_v0:1]  9.2s
+[224/300] games= 3584  W/D/L=5/0/11  wr=31%(直近42%)  trans= 852  p=0.0025  v=0.1463  opps=[league_iter100:3 league_iter150:2 league_iter175:1 league_iter200:1 league_iter25:2 league_iter50:5 league_iter75:2]  9.6s
+[225/300] games= 3600  W/D/L=9/0/7  wr=56%(直近43%)  trans= 763  p=-0.0013  v=0.1360  opps=[baseline:2 league_iter100:3 league_iter125:3 league_iter150:2 league_iter175:3 league_iter200:1 league_iter25:1 league_iter50:1]  8.6s
+  => リーグ追加: league_iter225  (現在 11 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50', 'league_iter75', 'league_iter100', 'league_iter125', 'league_iter150', 'league_iter175', 'league_iter200', 'league_iter225'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[226/300] games= 3616  W/D/L=4/0/12  wr=25%(直近41%)  trans= 613  p=-0.0193  v=0.1894  opps=[baseline:4 league_iter150:5 league_iter175:1 league_iter200:1 league_iter225:1 league_iter75:1 rl_v0:3]  7.7s
+[227/300] games= 3632  W/D/L=10/0/6  wr=62%(直近44%)  trans= 746  p=-0.0023  v=0.1852  opps=[baseline:2 league_iter125:3 league_iter150:1 league_iter175:1 league_iter200:2 league_iter25:1 league_iter50:2 league_iter75:3 rl_v0:1]  8.6s
+[228/300] games= 3648  W/D/L=9/0/7  wr=56%(直近46%)  trans= 631  p=-0.0113  v=0.1650  opps=[baseline:1 league_iter125:2 league_iter150:1 league_iter175:4 league_iter200:3 league_iter50:2 league_iter75:2 rl_v0:1]  7.4s
+[229/300] games= 3664  W/D/L=5/0/11  wr=31%(直近45%)  trans= 658  p=-0.0087  v=0.1651  opps=[baseline:1 league_iter100:1 league_iter125:5 league_iter150:2 league_iter175:2 league_iter225:2 league_iter50:2 rl_v0:1]  8.0s
+[230/300] games= 3680  W/D/L=7/0/9  wr=44%(直近44%)  trans= 862  p=-0.0242  v=0.1608  opps=[baseline:1 league_iter100:1 league_iter125:2 league_iter200:2 league_iter225:4 league_iter50:2 league_iter75:3 rl_v0:1]  9.4s
+[231/300] games= 3696  W/D/L=10/0/6  wr=62%(直近46%)  trans= 704  p=0.0020  v=0.1485  opps=[league_iter100:3 league_iter150:1 league_iter175:3 league_iter200:3 league_iter225:1 league_iter25:1 league_iter50:1 rl_v0:3]  8.1s
+[232/300] games= 3712  W/D/L=10/0/6  wr=62%(直近48%)  trans= 667  p=-0.0027  v=0.1400  opps=[baseline:4 league_iter100:3 league_iter125:1 league_iter175:1 league_iter200:2 league_iter225:1 league_iter50:1 league_iter75:3]  7.8s
+[233/300] games= 3728  W/D/L=9/1/6  wr=60%(直近49%)  trans= 732  p=-0.0055  v=0.1128  opps=[baseline:5 league_iter125:1 league_iter150:1 league_iter175:2 league_iter225:1 league_iter50:1 rl_v0:5]  8.3s
+[234/300] games= 3744  W/D/L=9/0/7  wr=56%(直近52%)  trans= 770  p=0.0692  v=0.1233  opps=[baseline:2 league_iter175:2 league_iter200:2 league_iter225:1 league_iter25:6 league_iter50:1 rl_v0:2]  8.9s
+[235/300] games= 3760  W/D/L=8/0/8  wr=50%(直近51%)  trans= 778  p=0.0090  v=0.1432  opps=[league_iter100:1 league_iter125:3 league_iter175:2 league_iter200:2 league_iter225:3 league_iter25:2 league_iter75:2 rl_v0:1]  8.9s
+[236/300] games= 3776  W/D/L=9/0/7  wr=56%(直近54%)  trans= 753  p=-0.0023  v=0.1388  opps=[baseline:2 league_iter100:1 league_iter125:4 league_iter150:1 league_iter200:1 league_iter225:1 league_iter25:3 league_iter50:3]  8.6s
+[237/300] games= 3792  W/D/L=7/0/9  wr=44%(直近52%)  trans= 717  p=-0.0030  v=0.1713  opps=[baseline:2 league_iter125:1 league_iter150:3 league_iter25:4 league_iter50:3 league_iter75:2 rl_v0:1]  8.3s
+[238/300] games= 3808  W/D/L=4/1/11  wr=27%(直近49%)  trans= 663  p=-0.0008  v=0.1590  opps=[league_iter100:2 league_iter150:2 league_iter175:4 league_iter225:3 league_iter25:2 league_iter50:1 league_iter75:1 rl_v0:1]  7.7s
+[239/300] games= 3824  W/D/L=8/1/7  wr=53%(直近52%)  trans= 588  p=-0.0124  v=0.1543  opps=[baseline:3 league_iter125:2 league_iter150:2 league_iter175:3 league_iter200:1 league_iter25:1 league_iter50:2 league_iter75:2]  7.2s
+[240/300] games= 3840  W/D/L=9/0/7  wr=56%(直近53%)  trans= 716  p=0.0005  v=0.2320  opps=[baseline:2 league_iter100:1 league_iter125:1 league_iter150:2 league_iter175:2 league_iter200:3 league_iter225:1 league_iter50:3 rl_v0:1]  8.1s
+[241/300] games= 3856  W/D/L=10/0/6  wr=62%(直近53%)  trans= 698  p=-0.0025  v=0.1707  opps=[baseline:1 league_iter100:2 league_iter125:1 league_iter150:1 league_iter175:3 league_iter225:1 league_iter25:1 league_iter50:3 league_iter75:2 rl_v0:1]  8.3s
+[242/300] games= 3872  W/D/L=9/0/7  wr=56%(直近52%)  trans= 803  p=0.0014  v=0.1252  opps=[league_iter100:2 league_iter125:2 league_iter150:1 league_iter175:2 league_iter200:1 league_iter225:3 league_iter25:2 league_iter50:2 rl_v0:1]  9.2s
+[243/300] games= 3888  W/D/L=5/0/11  wr=31%(直近49%)  trans= 708  p=-0.0062  v=0.2004  opps=[baseline:1 league_iter100:3 league_iter125:2 league_iter25:5 league_iter50:2 league_iter75:1 rl_v0:2]  8.2s
+[244/300] games= 3904  W/D/L=7/0/9  wr=44%(直近48%)  trans= 805  p=-0.0184  v=0.1096  opps=[league_iter100:3 league_iter125:3 league_iter150:2 league_iter225:2 league_iter25:2 league_iter50:1 league_iter75:1 rl_v0:2]  8.8s
+[245/300] games= 3920  W/D/L=10/0/6  wr=62%(直近49%)  trans= 722  p=-0.0036  v=0.1507  opps=[baseline:1 league_iter100:1 league_iter125:1 league_iter150:2 league_iter175:2 league_iter200:2 league_iter225:2 league_iter25:3 league_iter50:2]  8.3s
+[246/300] games= 3936  W/D/L=6/0/10  wr=38%(直近47%)  trans= 714  p=-0.0015  v=0.1695  opps=[baseline:3 league_iter100:3 league_iter125:1 league_iter150:2 league_iter175:1 league_iter200:2 league_iter25:1 league_iter50:1 league_iter75:2]  8.0s
+[247/300] games= 3952  W/D/L=6/1/9  wr=40%(直近47%)  trans= 722  p=0.0002  v=0.1193  opps=[baseline:1 league_iter125:1 league_iter150:2 league_iter175:1 league_iter200:4 league_iter225:3 league_iter50:1 league_iter75:2 rl_v0:1]  8.5s
+[248/300] games= 3968  W/D/L=3/0/13  wr=19%(直近46%)  trans= 747  p=-0.0008  v=0.1250  opps=[baseline:3 league_iter100:1 league_iter175:5 league_iter200:2 league_iter225:2 league_iter25:1 rl_v0:2]  8.7s
+[249/300] games= 3984  W/D/L=10/0/6  wr=62%(直近47%)  trans= 724  p=-0.0011  v=0.1720  opps=[baseline:1 league_iter100:1 league_iter125:1 league_iter150:2 league_iter25:2 league_iter50:2 league_iter75:1 rl_v0:6]  8.4s
+[250/300] games= 4000  W/D/L=5/0/11  wr=31%(直近45%)  trans= 638  p=-0.0095  v=0.1530  opps=[baseline:1 league_iter125:2 league_iter150:3 league_iter175:2 league_iter200:1 league_iter225:1 league_iter50:3 league_iter75:2 rl_v0:1]  7.6s
+  => リーグ追加: league_iter250  (現在 12 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50', 'league_iter75', 'league_iter100', 'league_iter125', 'league_iter150', 'league_iter175', 'league_iter200', 'league_iter225', 'league_iter250'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[251/300] games= 4016  W/D/L=9/0/7  wr=56%(直近44%)  trans= 750  p=-0.0023  v=0.1647  opps=[baseline:2 league_iter100:2 league_iter125:2 league_iter150:1 league_iter175:2 league_iter200:2 league_iter225:2 league_iter250:2 league_iter75:1]  8.7s
+[252/300] games= 4032  W/D/L=6/0/10  wr=38%(直近42%)  trans= 672  p=-0.0083  v=0.1481  opps=[league_iter100:1 league_iter175:1 league_iter200:2 league_iter225:3 league_iter25:2 league_iter250:2 league_iter50:2 rl_v0:3]  8.1s
+[253/300] games= 4048  W/D/L=6/0/10  wr=38%(直近43%)  trans= 843  p=-0.0137  v=0.1135  opps=[baseline:4 league_iter175:2 league_iter225:2 league_iter25:1 league_iter250:1 league_iter75:4 rl_v0:2]  9.5s
+[254/300] games= 4064  W/D/L=9/0/7  wr=56%(直近44%)  trans= 667  p=-0.0092  v=0.1314  opps=[baseline:2 league_iter125:3 league_iter150:1 league_iter175:1 league_iter225:2 league_iter25:2 league_iter250:1 league_iter50:1 league_iter75:1 rl_v0:2]  7.5s
+[255/300] games= 4080  W/D/L=8/0/8  wr=50%(直近43%)  trans= 767  p=-0.0025  v=0.1919  opps=[baseline:1 league_iter100:5 league_iter125:1 league_iter150:2 league_iter175:1 league_iter200:1 league_iter225:1 league_iter25:1 league_iter75:1 rl_v0:2]  8.5s
+[256/300] games= 4096  W/D/L=7/0/9  wr=44%(直近43%)  trans= 690  p=-0.0006  v=0.2136  opps=[baseline:1 league_iter125:1 league_iter150:1 league_iter175:1 league_iter200:1 league_iter225:4 league_iter25:1 league_iter250:2 league_iter50:1 league_iter75:2 rl_v0:1]  8.2s
+[257/300] games= 4112  W/D/L=6/0/10  wr=38%(直近43%)  trans= 800  p=-0.0012  v=0.1363  opps=[baseline:1 league_iter100:1 league_iter125:1 league_iter150:3 league_iter175:2 league_iter200:1 league_iter225:1 league_iter25:4 league_iter75:1 rl_v0:1]  9.0s
+[258/300] games= 4128  W/D/L=4/1/11  wr=27%(直近44%)  trans= 710  p=-0.0028  v=0.1356  opps=[baseline:1 league_iter100:1 league_iter125:1 league_iter150:1 league_iter175:1 league_iter200:4 league_iter225:2 league_iter25:1 league_iter250:2 league_iter50:1 league_iter75:1]  8.1s
+[259/300] games= 4144  W/D/L=7/0/9  wr=44%(直近42%)  trans= 735  p=-0.0037  v=0.1427  opps=[baseline:1 league_iter100:2 league_iter125:1 league_iter150:2 league_iter225:1 league_iter25:2 league_iter250:2 league_iter50:3 league_iter75:1 rl_v0:1]  8.4s
+[260/300] games= 4160  W/D/L=7/0/9  wr=44%(直近43%)  trans= 706  p=0.0002  v=0.1930  opps=[league_iter100:2 league_iter125:2 league_iter175:2 league_iter200:3 league_iter225:3 league_iter25:1 league_iter50:2 league_iter75:1]  8.0s
+[261/300] games= 4176  W/D/L=7/0/9  wr=44%(直近42%)  trans= 727  p=-0.0009  v=0.1975  opps=[baseline:2 league_iter100:1 league_iter150:3 league_iter175:1 league_iter200:1 league_iter225:2 league_iter25:2 league_iter250:1 league_iter75:2 rl_v0:1]  8.6s
+[262/300] games= 4192  W/D/L=10/0/6  wr=62%(直近45%)  trans= 763  p=-0.0021  v=0.1382  opps=[baseline:3 league_iter125:1 league_iter150:1 league_iter200:1 league_iter225:2 league_iter25:2 league_iter250:3 league_iter50:1 league_iter75:2]  8.9s
+[263/300] games= 4208  W/D/L=10/0/6  wr=62%(直近47%)  trans= 688  p=-0.0039  v=0.1424  opps=[baseline:1 league_iter100:1 league_iter125:3 league_iter150:3 league_iter175:1 league_iter200:1 league_iter225:1 league_iter25:1 league_iter250:2 league_iter50:1 league_iter75:1]  8.3s
+[264/300] games= 4224  W/D/L=4/0/12  wr=25%(直近44%)  trans= 756  p=-0.0011  v=0.1573  opps=[league_iter100:2 league_iter125:1 league_iter175:1 league_iter200:4 league_iter225:1 league_iter25:2 league_iter50:2 league_iter75:2 rl_v0:1]  8.6s
+[265/300] games= 4240  W/D/L=9/0/7  wr=56%(直近45%)  trans= 655  p=-0.0061  v=0.1448  opps=[baseline:3 league_iter100:1 league_iter125:1 league_iter150:2 league_iter175:2 league_iter200:1 league_iter225:2 league_iter25:2 rl_v0:2]  7.8s
+[266/300] games= 4256  W/D/L=7/0/9  wr=44%(直近45%)  trans= 689  p=-0.0015  v=0.1519  opps=[baseline:1 league_iter100:1 league_iter125:2 league_iter150:3 league_iter175:2 league_iter225:1 league_iter25:1 league_iter250:2 league_iter50:1 league_iter75:2]  7.7s
+[267/300] games= 4272  W/D/L=9/0/7  wr=56%(直近46%)  trans= 669  p=-0.0095  v=0.1669  opps=[baseline:2 league_iter100:1 league_iter125:1 league_iter150:2 league_iter175:1 league_iter225:1 league_iter25:1 league_iter75:4 rl_v0:3]  7.6s
+[268/300] games= 4288  W/D/L=6/0/10  wr=38%(直近48%)  trans= 701  p=0.0014  v=0.1271  opps=[league_iter100:2 league_iter125:1 league_iter150:2 league_iter175:2 league_iter200:3 league_iter225:1 league_iter25:1 league_iter250:1 league_iter75:2 rl_v0:1]  8.1s
+[269/300] games= 4304  W/D/L=11/0/5  wr=69%(直近50%)  trans= 673  p=0.0062  v=0.1839  opps=[baseline:3 league_iter100:1 league_iter125:1 league_iter150:1 league_iter175:2 league_iter200:1 league_iter225:1 league_iter25:2 league_iter250:2 league_iter50:1 rl_v0:1]  8.1s
+[270/300] games= 4320  W/D/L=8/0/8  wr=50%(直近51%)  trans= 732  p=-0.0009  v=0.1469  opps=[baseline:1 league_iter100:1 league_iter125:1 league_iter150:2 league_iter175:1 league_iter225:2 league_iter25:5 league_iter250:2 league_iter75:1]  8.4s
+[271/300] games= 4336  W/D/L=8/0/8  wr=50%(直近51%)  trans= 697  p=0.0006  v=0.1534  opps=[baseline:1 league_iter100:1 league_iter150:1 league_iter175:3 league_iter200:1 league_iter225:2 league_iter25:3 league_iter50:2 league_iter75:1 rl_v0:1]  7.9s
+[272/300] games= 4352  W/D/L=11/0/5  wr=69%(直近52%)  trans= 873  p=0.0041  v=0.1081  opps=[baseline:3 league_iter100:1 league_iter125:1 league_iter150:2 league_iter175:2 league_iter200:3 league_iter250:2 rl_v0:2]  9.9s
+[273/300] games= 4368  W/D/L=6/0/10  wr=38%(直近49%)  trans= 745  p=-0.0012  v=0.2224  opps=[baseline:1 league_iter100:2 league_iter125:1 league_iter150:2 league_iter175:2 league_iter200:1 league_iter25:3 league_iter250:1 league_iter50:1 rl_v0:2]  8.8s
+[274/300] games= 4384  W/D/L=6/1/9  wr=40%(直近51%)  trans= 608  p=0.0054  v=0.1841  opps=[baseline:1 league_iter100:2 league_iter125:2 league_iter150:1 league_iter175:1 league_iter225:2 league_iter25:1 league_iter50:1 league_iter75:3 rl_v0:2]  7.2s
+[275/300] games= 4400  W/D/L=6/0/10  wr=38%(直近49%)  trans= 809  p=0.0009  v=0.1352  opps=[league_iter100:1 league_iter175:3 league_iter200:2 league_iter225:2 league_iter250:2 league_iter50:2 league_iter75:2 rl_v0:2]  9.3s
+  => リーグ追加: league_iter275  (現在 13 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50', 'league_iter75', 'league_iter100', 'league_iter125', 'league_iter150', 'league_iter175', 'league_iter200', 'league_iter225', 'league_iter250', 'league_iter275'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+[276/300] games= 4416  W/D/L=5/0/11  wr=31%(直近48%)  trans= 686  p=-0.0062  v=0.1267  opps=[baseline:1 league_iter100:2 league_iter175:4 league_iter200:1 league_iter225:1 league_iter25:2 league_iter250:2 league_iter275:2 league_iter75:1]  8.2s
+[277/300] games= 4432  W/D/L=9/0/7  wr=56%(直近48%)  trans= 734  p=-0.0044  v=0.1129  opps=[baseline:2 league_iter100:3 league_iter125:1 league_iter150:1 league_iter200:2 league_iter25:1 league_iter275:2 league_iter50:1 league_iter75:2 rl_v0:1]  8.5s
+[278/300] games= 4448  W/D/L=9/0/7  wr=56%(直近50%)  trans= 743  p=-0.0030  v=0.1536  opps=[baseline:3 league_iter175:1 league_iter225:5 league_iter250:1 league_iter275:1 league_iter50:1 league_iter75:3 rl_v0:1]  8.1s
+[279/300] games= 4464  W/D/L=7/0/9  wr=44%(直近47%)  trans= 754  p=-0.0037  v=0.1690  opps=[baseline:1 league_iter100:3 league_iter150:1 league_iter225:2 league_iter25:2 league_iter250:3 league_iter275:1 league_iter75:1 rl_v0:2]  8.5s
+[280/300] games= 4480  W/D/L=8/0/8  wr=50%(直近47%)  trans= 772  p=0.0070  v=0.1808  opps=[baseline:2 league_iter100:2 league_iter125:3 league_iter200:1 league_iter225:3 league_iter25:1 league_iter250:1 league_iter50:2 league_iter75:1]  8.9s
+[281/300] games= 4496  W/D/L=10/0/6  wr=62%(直近48%)  trans= 760  p=-0.0032  v=0.2017  opps=[baseline:1 league_iter150:1 league_iter175:2 league_iter225:3 league_iter250:4 league_iter275:2 league_iter75:2 rl_v0:1]  8.6s
+[282/300] games= 4512  W/D/L=6/0/10  wr=38%(直近45%)  trans= 654  p=-0.0046  v=0.2143  opps=[baseline:2 league_iter125:1 league_iter175:3 league_iter200:1 league_iter25:2 league_iter250:5 league_iter75:1 rl_v0:1]  7.8s
+[283/300] games= 4528  W/D/L=5/1/10  wr=33%(直近45%)  trans= 426  p=-0.0029  v=0.1531  opps=[baseline:1 league_iter100:1 league_iter125:1 league_iter150:1 league_iter175:1 league_iter200:1 league_iter225:1 league_iter25:1 league_iter275:2 league_iter50:3 league_iter75:1 rl_v0:2]  5.5s
+[284/300] games= 4544  W/D/L=8/0/8  wr=50%(直近46%)  trans= 722  p=-0.0018  v=0.1617  opps=[baseline:3 league_iter100:1 league_iter175:2 league_iter200:3 league_iter225:1 league_iter25:1 league_iter250:2 league_iter275:1 rl_v0:2]  8.3s
+[285/300] games= 4560  W/D/L=7/0/9  wr=44%(直近46%)  trans= 707  p=-0.0025  v=0.1573  opps=[league_iter100:4 league_iter125:1 league_iter200:1 league_iter225:2 league_iter25:1 league_iter250:1 league_iter275:1 league_iter50:3 league_iter75:1 rl_v0:1]  8.2s
+[286/300] games= 4576  W/D/L=9/0/7  wr=56%(直近49%)  trans= 693  p=-0.0008  v=0.1900  opps=[baseline:3 league_iter125:2 league_iter175:2 league_iter25:1 league_iter275:1 league_iter50:2 league_iter75:3 rl_v0:2]  8.0s
+[287/300] games= 4592  W/D/L=7/0/9  wr=44%(直近48%)  trans= 668  p=-0.0050  v=0.1455  opps=[baseline:3 league_iter100:1 league_iter125:1 league_iter150:1 league_iter175:1 league_iter200:1 league_iter225:1 league_iter250:1 league_iter275:3 league_iter75:2 rl_v0:1]  7.9s
+[288/300] games= 4608  W/D/L=8/0/8  wr=50%(直近47%)  trans= 726  p=-0.0011  v=0.1474  opps=[baseline:1 league_iter100:1 league_iter125:3 league_iter150:2 league_iter175:1 league_iter200:1 league_iter225:1 league_iter250:2 league_iter275:1 league_iter75:2 rl_v0:1]  8.3s
+[289/300] games= 4624  W/D/L=6/0/10  wr=38%(直近46%)  trans= 690  p=-0.0021  v=0.1483  opps=[baseline:4 league_iter100:1 league_iter150:2 league_iter175:1 league_iter200:1 league_iter25:2 league_iter250:1 league_iter75:2 rl_v0:2]  7.9s
+[290/300] games= 4640  W/D/L=7/0/9  wr=44%(直近46%)  trans= 700  p=-0.0048  v=0.2052  opps=[baseline:1 league_iter100:2 league_iter125:1 league_iter150:1 league_iter175:5 league_iter250:1 league_iter275:1 league_iter50:1 league_iter75:1 rl_v0:2]  8.2s
+[291/300] games= 4656  W/D/L=10/0/6  wr=62%(直近46%)  trans= 773  p=-0.0347  v=0.1513  opps=[baseline:1 league_iter100:1 league_iter125:1 league_iter150:2 league_iter175:1 league_iter200:1 league_iter225:2 league_iter25:3 league_iter250:1 league_iter275:2 league_iter75:1]  9.1s
+[292/300] games= 4672  W/D/L=6/0/10  wr=38%(直近46%)  trans= 711  p=-0.0022  v=0.1283  opps=[league_iter150:2 league_iter175:1 league_iter200:1 league_iter25:1 league_iter250:3 league_iter275:4 league_iter50:2 rl_v0:2]  8.1s
+[293/300] games= 4688  W/D/L=7/0/9  wr=44%(直近47%)  trans= 715  p=-0.0017  v=0.1427  opps=[baseline:1 league_iter100:2 league_iter150:2 league_iter225:2 league_iter25:2 league_iter275:1 league_iter50:1 league_iter75:4 rl_v0:1]  8.3s
+[294/300] games= 4704  W/D/L=6/1/9  wr=40%(直近46%)  trans= 728  p=-0.0034  v=0.1579  opps=[baseline:2 league_iter150:2 league_iter175:1 league_iter200:1 league_iter225:2 league_iter25:2 league_iter250:1 league_iter275:1 league_iter75:1 rl_v0:3]  8.4s
+[295/300] games= 4720  W/D/L=9/1/6  wr=60%(直近48%)  trans= 711  p=-0.0030  v=0.1075  opps=[baseline:2 league_iter125:1 league_iter150:3 league_iter175:2 league_iter25:1 league_iter50:1 league_iter75:4 rl_v0:2]  8.3s
+[296/300] games= 4736  W/D/L=5/0/11  wr=31%(直近45%)  trans= 769  p=0.0677  v=0.1164  opps=[baseline:2 league_iter100:1 league_iter125:2 league_iter150:3 league_iter175:2 league_iter200:1 league_iter225:2 league_iter250:1 rl_v0:2]  8.7s
+[297/300] games= 4752  W/D/L=6/0/10  wr=38%(直近44%)  trans= 749  p=-0.0026  v=0.1690  opps=[baseline:1 league_iter100:3 league_iter125:1 league_iter150:1 league_iter200:2 league_iter225:2 league_iter25:1 league_iter250:1 league_iter275:2 league_iter50:1 rl_v0:1]  8.5s
+[298/300] games= 4768  W/D/L=6/0/10  wr=38%(直近43%)  trans= 663  p=0.0018  v=0.1456  opps=[baseline:4 league_iter125:1 league_iter150:1 league_iter175:1 league_iter225:1 league_iter250:2 league_iter275:1 league_iter50:2 league_iter75:2 rl_v0:1]  7.8s
+[299/300] games= 4784  W/D/L=11/0/5  wr=69%(直近46%)  trans= 725  p=-0.0053  v=0.1794  opps=[baseline:1 league_iter125:3 league_iter150:3 league_iter175:2 league_iter225:1 league_iter25:1 league_iter250:1 league_iter50:1 league_iter75:2 rl_v0:1]  8.1s
+[300/300] games= 4800  W/D/L=9/0/7  wr=56%(直近48%)  trans= 784  p=-0.0333  v=0.1659  opps=[baseline:1 league_iter100:2 league_iter150:1 league_iter200:3 league_iter225:3 league_iter250:2 league_iter275:1 league_iter50:3]  9.1s
+  => リーグ追加: league_iter300  (現在 14 メンバー: ['baseline', 'rl_v0', 'league_iter25', 'league_iter50', 'league_iter75', 'league_iter100', 'league_iter125', 'league_iter150', 'league_iter175', 'league_iter200', 'league_iter225', 'league_iter250', 'league_iter275', 'league_iter300'])
+  => チェックポイント保存: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+
+学習完了。最終モデル: C:\projects\pokemonAI-myspace\submission\ptcg_league_model.pth
+提出に使う場合は以下を実行:
+  copy submission\ptcg_league_model.pth submission\ptcg_rl_model.pth

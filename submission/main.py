@@ -1,10 +1,14 @@
 import os
-import re
 import json
+import time
+import math
+import random
 import numpy as np
+from collections import Counter
 
 from cg.api import (to_observation_class, Observation, SelectType, OptionType,
-                    SelectContext, EnergyType, all_card_data, all_attack)
+                    SelectContext, EnergyType, all_card_data, all_attack,
+                    search_begin, search_step, search_end, search_release)
 from cg.sim import lib
 
 # ============================================================
@@ -36,7 +40,7 @@ _ENERGY_TYPE_STR = {
 }
 
 # ============================================================
-# Card dict (built from game engine API — no CSV needed)
+# Card dict
 # ============================================================
 def _build_card_dict():
     atk_map = {a.attackId: a for a in all_attack()}
@@ -53,6 +57,7 @@ def _build_card_dict():
             'Damage':   first_atk.damage        if first_atk else 0,
             'Cost':     len(first_atk.energies) if first_atk else 0,
             'is_ex':    1 if (c.ex or c.megaEx) else 0,
+            'basic':    c.basic,
         }
     return d
 
@@ -62,7 +67,7 @@ except Exception:
     _card_dict = {}
 
 # ============================================================
-# Feature extraction (must match train_model.py exactly)
+# Feature extraction
 # ============================================================
 def _one_hot(val, vocab):
     v = [0] * len(vocab)
@@ -141,7 +146,7 @@ def _extract_state_vector(obs):
     )
 
 # ============================================================
-# Model loading (lazy — runs once at import)
+# Model loading
 # ============================================================
 _model      = None
 _norm_mean  = None
@@ -171,8 +176,12 @@ def _load_model():
                 x = F.relu(self.ln2(self.fc2(x)))
                 return self.fc3(x)
 
-        base       = _agent_dir()
-        model_path = os.path.join(base, "ptcg_baseline_model.pth")
+        base = _agent_dir()
+        # best > league > rl > baseline の優先順位でモデルを選択
+        for candidate in ("ptcg_best_model.pth", "ptcg_league_model.pth", "ptcg_rl_model.pth", "ptcg_baseline_model.pth"):
+            model_path = os.path.join(base, candidate)
+            if os.path.exists(model_path):
+                break
         norm_path  = os.path.join(base, "ptcg_normalization.npz")
         if not os.path.exists(model_path) or not os.path.exists(norm_path):
             return
@@ -202,7 +211,7 @@ def _nn_pick(obs, valid_count):
         if sv is None:
             return None
 
-        norm_sv = (sv - _norm_mean) / _norm_std
+        norm_sv = (sv - _norm_mean) / (_norm_std + 1e-8)
         x    = torch.tensor(norm_sv, dtype=torch.float32).unsqueeze(0)
         mask = (torch.arange(MAX_ACTIONS) >= valid_count).unsqueeze(0)
         with torch.no_grad():
@@ -214,7 +223,7 @@ def _nn_pick(obs, valid_count):
         return None
 
 # ============================================================
-# Rule-based fallbacks
+# Rule-based helpers
 # ============================================================
 _ATK_DAMAGE = {}
 try:
@@ -242,16 +251,278 @@ _LOSS_CONTEXTS = {
 
 _STATE = {"turn": -1, "turn_actions": 0}
 
+# ============================================================
+# MCTS
+# ============================================================
+MCTS_TIME_BUDGET = 0.3   # seconds per MAIN selection
+MCTS_MAX_DEPTH   = 20    # max rollout steps per simulation
+MCTS_C           = math.sqrt(2)
 
+_GAME_STATE = {
+    "full_deck": None,  # list[int]: our 60-card deck
+}
+
+
+def _remove_known_cards(full: Counter, player, include_hand=True):
+    """Subtract cards visible on the field from a Counter."""
+    def sub(card_id):
+        if full[card_id] > 0:
+            full[card_id] -= 1
+
+    def sub_poke(poke):
+        if poke is None:
+            return
+        sub(poke.id)
+        for ec in poke.energyCards:
+            sub(ec.id)
+        for tc in poke.tools:
+            sub(tc.id)
+
+    if include_hand and player.hand:
+        for c in player.hand:
+            sub(c.id)
+    if player.discard:
+        for c in player.discard:
+            sub(c.id)
+    if player.active:
+        for p in player.active:
+            sub_poke(p)
+    for p in player.bench:
+        sub_poke(p)
+    for prize in player.prize:
+        if prize is not None:
+            sub(prize.id)
+
+
+def _predict_my_info(obs, my_index):
+    """Return (predicted_deck, predicted_prize) for our side."""
+    if _GAME_STATE["full_deck"] is None or obs.current is None:
+        return [], []
+    player = obs.current.players[my_index]
+    full = Counter(_GAME_STATE["full_deck"])
+    _remove_known_cards(full, player, include_hand=True)
+
+    remaining = [cid for cid, cnt in full.items() for _ in range(max(0, cnt))]
+    random.shuffle(remaining)
+
+    n_prize_unknown = sum(1 for p in player.prize if p is None)
+    n_deck = player.deckCount
+    needed = n_prize_unknown + n_deck
+    while len(remaining) < needed:
+        remaining.append(_GAME_STATE["full_deck"][0])
+
+    return remaining[n_prize_unknown:needed], remaining[:n_prize_unknown]
+
+
+def _predict_opp_info(obs, my_index):
+    """Return (opp_deck, opp_prize, opp_hand) using our deck as template."""
+    if _GAME_STATE["full_deck"] is None or obs.current is None:
+        return [], [], []
+    opp_index = 1 - my_index
+    player = obs.current.players[opp_index]
+    full = Counter(_GAME_STATE["full_deck"])
+    # Subtract cards we can see on opponent's side (no hand access)
+    _remove_known_cards(full, player, include_hand=False)
+
+    remaining = [cid for cid, cnt in full.items() for _ in range(max(0, cnt))]
+    random.shuffle(remaining)
+
+    n_prize = len(player.prize)
+    n_deck  = player.deckCount
+    n_hand  = player.handCount
+    needed  = n_prize + n_deck + n_hand
+    while len(remaining) < needed:
+        remaining.append(_GAME_STATE["full_deck"][0])
+    remaining = remaining[:needed]
+
+    return remaining[n_prize:n_prize + n_deck], remaining[:n_prize], remaining[n_prize + n_deck:]
+
+
+def _find_basic_pokemon_id():
+    """Return the card ID of the first basic Pokémon in our deck."""
+    if not _GAME_STATE["full_deck"]:
+        return None
+    for cid in _GAME_STATE["full_deck"]:
+        if _card_dict.get(cid, {}).get('basic', False):
+            return cid
+    return _GAME_STATE["full_deck"][0]
+
+
+def _heuristic_value(obs, my_index):
+    """Estimate state value in [0, 1] (0=losing, 1=winning)."""
+    if obs is None or obs.current is None or len(obs.current.players) < 2:
+        return 0.5
+
+    my_p  = obs.current.players[my_index]
+    opp_p = obs.current.players[1 - my_index]
+
+    # Prize advantage: fewer remaining prizes = closer to winning
+    prize_adv = (len(opp_p.prize) - len(my_p.prize)) / 6.0
+
+    # HP advantage on active
+    def hp_ratio(p):
+        if p.active and p.active[0] is not None:
+            pk = p.active[0]
+            return pk.hp / pk.maxHp if pk.maxHp > 0 else 0.5
+        return 0.5
+
+    hp_adv = hp_ratio(my_p) - hp_ratio(opp_p)
+
+    return max(0.0, min(1.0, 0.5 + prize_adv * 0.35 + hp_adv * 0.15))
+
+
+def _rollout(start_id, start_obs, my_index):
+    """
+    Random rollout from start_id. Releases all states it creates internally.
+    Does NOT release start_id. Returns value in [0, 1].
+    """
+    created = []
+    current_id  = start_id
+    current_obs = start_obs
+
+    try:
+        for _ in range(MCTS_MAX_DEPTH):
+            cur = current_obs.current
+            if cur is not None and cur.result != -1:
+                w = cur.result
+                return 1.0 if w == my_index else (0.5 if w == 2 else 0.0)
+
+            sel = current_obs.select
+            if sel is None or not sel.option:
+                return _heuristic_value(current_obs, my_index)
+
+            n_opt  = len(sel.option)
+            min_c  = max(getattr(sel, 'minCount', 1), 1)
+            max_c  = min(getattr(sel, 'maxCount', 1), n_opt)
+            k      = max(min_c, 1)
+            k      = min(k, max_c)
+            acts   = random.sample(range(n_opt), min(k, n_opt))
+            try:
+                next_s = search_step(current_id, acts)
+            except Exception:
+                return _heuristic_value(current_obs, my_index)
+
+            current_id  = next_s.searchId
+            current_obs = next_s.observation
+            created.append(current_id)
+
+        return _heuristic_value(current_obs, my_index)
+
+    finally:
+        for sid in reversed(created):
+            try:
+                search_release(sid)
+            except Exception:
+                pass
+
+
+def _mcts_search(obs):
+    """
+    Flat UCB1 MCTS for a MAIN selection.
+    Returns best action index, or None on failure.
+    """
+    if obs.search_begin_input is None:
+        return None
+    if obs.current is None or _GAME_STATE["full_deck"] is None:
+        return None
+
+    my_index = obs.current.yourIndex
+
+    try:
+        my_deck, my_prize = _predict_my_info(obs, my_index)
+        opp_deck, opp_prize, opp_hand = _predict_opp_info(obs, my_index)
+
+        # Handle face-down opponent active (rare but must be handled)
+        opp_active = []
+        opp_p = obs.current.players[1 - my_index]
+        if opp_p.active and opp_p.active[0] is None:
+            basic_id = _find_basic_pokemon_id()
+            if basic_id is not None:
+                opp_active = [basic_id]
+            else:
+                return None
+
+        root = search_begin(
+            obs, my_deck, my_prize, opp_deck, opp_prize, opp_hand, opp_active
+        )
+    except Exception:
+        return None
+
+    n = len(obs.select.option)
+    visits = [0] * n
+    values = [0.0] * n
+    total  = 0
+
+    deadline = time.time() + MCTS_TIME_BUDGET
+
+    try:
+        while time.time() < deadline:
+            # UCB1 action selection
+            if total == 0:
+                action = random.randrange(n)
+            else:
+                log_t = math.log(total + 1)
+                best_ucb, action = -1.0, 0
+                for i in range(n):
+                    if visits[i] == 0:
+                        action = i
+                        break
+                    ucb = values[i] / visits[i] + MCTS_C * math.sqrt(log_t / visits[i])
+                    if ucb > best_ucb:
+                        best_ucb, action = ucb, i
+
+            # Expand: one step from root with this action
+            try:
+                child = search_step(root.searchId, [action])
+            except Exception:
+                visits[action] += 1
+                values[action] += 0.5
+                total += 1
+                continue
+
+            # Rollout (releases all states it creates)
+            value = _rollout(child.searchId, child.observation, my_index)
+
+            # Release child after rollout
+            try:
+                search_release(child.searchId)
+            except Exception:
+                pass
+
+            visits[action] += 1
+            values[action] += value
+            total += 1
+
+    finally:
+        try:
+            search_end()
+        except Exception:
+            pass
+
+    if total == 0:
+        return None
+
+    # Best action = most visited (robust choice over highest win rate)
+    return max(range(n), key=lambda i: visits[i])
+
+
+# ============================================================
+# Deck reading
+# ============================================================
 def read_deck_csv():
     path = "deck.csv"
     if not os.path.exists(path):
         path = "/kaggle_simulations/agent/deck.csv"
     with open(path, "r") as f:
         rows = f.read().split("\n")
-    return [int(rows[i]) for i in range(60)]
+    deck = [int(rows[i]) for i in range(60)]
+    _GAME_STATE["full_deck"] = deck
+    return deck
 
 
+# ============================================================
+# Rule-based fallbacks
+# ============================================================
 def _safe_default(sel):
     n = len(sel.option)
     k = max(sel.minCount, 1)
@@ -331,10 +602,17 @@ def agent(obs_dict):
                 for i, op in enumerate(sel.option):
                     if op.type == OptionType.END:
                         return [i]
-            # Neural network decision
+
+            # MCTS (primary)
+            mcts_action = _mcts_search(obs)
+            if mcts_action is not None and 0 <= mcts_action < len(sel.option):
+                return [mcts_action]
+
+            # NN fallback
             nn_action = _nn_pick(obs, len(sel.option))
             if nn_action is not None:
                 return [nn_action]
+
             # Rule-based fallback
             return _rule_pick_main(sel)
 
