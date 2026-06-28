@@ -25,10 +25,14 @@ pokemonAI-myspace/
 │   ├── main.py           # エージェントエントリーポイント
 │   ├── deck.csv          # 60枚のデッキ（Card IDのリスト）
 │   └── cg/               # ゲームエンジンライブラリ
-├── submission/           # 現在の提出エージェント（ルールベース）
-│   ├── main.py           # 改良版エージェント
+├── submission/           # 現在の提出エージェント（NN + ルールベースハイブリッド）
+│   ├── main.py           # ハイブリッドエージェント（v1）
 │   ├── deck.csv          # ルカリオデッキ
+│   ├── ptcg_baseline_model.pth   # 学習済みモデル（約24MB）
+│   ├── ptcg_normalization.npz    # 正規化パラメータ
 │   └── cg/               # ゲームエンジンライブラリ
+├── submission.tar.gz     # Kaggle提出用tarball
+├── train_model.py        # 模倣学習スクリプト（archive/ → モデル生成）
 ├── ポケモン強化学習.ipynb    # 学習用ノートブック
 ├── ルカリオデッキの回し方.txt  # デッキ戦略ドキュメント
 └── Competition Rules.txt
@@ -116,7 +120,60 @@ Observation
 
 ---
 
-## 学習アプローチ（Colabで実施予定）
+## 現状の提出エージェント（v1）
+
+### 構成ファイル
+```
+submission/
+├── main.py                    # NN + ルールベースハイブリッドエージェント
+├── deck.csv                   # ルカリオデッキ（60枚）
+├── ptcg_baseline_model.pth    # 学習済みモデル（約24MB）
+├── ptcg_normalization.npz     # 正規化パラメータ（mean/std）
+└── cg/                        # ゲームエンジン
+```
+
+### 学習結果
+- 学習スクリプト: `train_model.py`
+- 学習データ: `archive/` 全5,062件、勝者（reward=1）のMAINターン選択のみ
+- アーキテクチャ: FC(5658→1024)+LayerNorm+ReLU → FC(1024→512)+LayerNorm+ReLU → FC(512→256)
+- 最良エポック: Epoch 4（val_loss=1.3318, val_acc=53.6%）
+- Epoch 10時点: train_acc=65.9%, val_acc=50.8%（オーバーフィット気味）
+
+### 現状の問題点
+
+| 問題 | 詳細 |
+|------|------|
+| 模倣学習の限界 | 勝者のアクションを模倣するが、複数の正解があるため精度が頭打ち |
+| 品質フィルタなし | 運で勝ったゲームも実力で勝ったゲームも同等に学習 |
+| MAINのみNN | YES/NO・カード選択・リトリート先などはルールベース任せ |
+| オーバーフィット | Epoch4以降val_accが低下 |
+
+---
+
+## 次にすべき改善
+
+優先度順：
+
+1. **MCTSとの組み合わせ**（最効果大）
+   - `search_begin` / `search_step` / `search_end` APIを使ったモンテカルロ木探索
+   - 現在のNNをMCTSのrollout評価関数として使う
+   - 時間制限（例: 1秒/ターン）を設けて探索
+
+2. **データ品質フィルタ**
+   - 長いゲーム（例: 30ターン以上）の勝者のみ学習（実力勝ちの可能性が高い）
+   - 両者の勝敗が明確なゲームに絞る
+
+3. **全SelectTypeをNN化**
+   - MAIN以外（カード選択、YES/NO判断など）もNNで学習
+   - 選択タイプごとに別モデルを用意するか、contextをone-hotで入力に加える
+
+4. **強化学習でfine-tune**
+   - 模倣学習後にself-playで強化学習
+   - ゲームエンジンのシミュレーターでエピソードを生成
+
+---
+
+## 学習アプローチ
 
 ### 方針
 1. **Imitation Learning**: `archive/` の対戦データから上位プレイヤーの行動を学習
