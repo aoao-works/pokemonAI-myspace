@@ -1,0 +1,77 @@
+[{"stream_name":"stderr","time":7.85565688,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.85575367,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.85576426,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.85576834,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.506012536,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.506054936,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.506060306,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.506064326,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.805650198,"data":"=== /kaggle/input/ の構造 ===\n"}
+,{"stream_name":"stdout","time":9.805701518,"data":"input/  [0 files]\n"}
+,{"stream_name":"stdout","time":9.805740718,"data":"  datasets/  [0 files]\n"}
+,{"stream_name":"stdout","time":9.805744748,"data":"    organizations/  [0 files]\n"}
+,{"stream_name":"stdout","time":14.324905759,"data":"  competitions/  [0 files]\n"}
+,{"stream_name":"stdout","time":14.324956869,"data":"    pokemon-tcg-ai-battle/  [4 files]\n"}
+,{"stream_name":"stdout","time":14.324962889,"data":"      first files: ['Card_ID List_JP.pdf', 'Card_ID List_EN.pdf', 'EN_Card_Data.csv', 'JP_Card_Data.csv']\n"}
+,{"stream_name":"stdout","time":14.324968029,"data":"\n"}
+,{"stream_name":"stdout","time":17.678974244,"data":"JSONディレクトリ候補: [('/kaggle/input/datasets/organizations/kaggle/pokemon-tcg-ai-battle-episodes-2026-06-27', 5919)]\n"}
+,{"stream_name":"stdout","time":17.679013434,"data":"エピソードデータ: /kaggle/input/datasets/organizations/kaggle/pokemon-tcg-ai-battle-episodes-2026-06-27\n"}
+,{"stream_name":"stdout","time":17.679020074,"data":"JSONファイル数  : 5919\n"}
+,{"stream_name":"stdout","time":17.679025124,"data":"カードデータ    : /kaggle/input/competitions/pokemon-tcg-ai-battle/EN_Card_Data.csv\n"}
+,{"stream_name":"stdout","time":17.679030244,"data":"リーダーボード  : 未検出（全勝者を均等学習）\n"}
+,{"stream_name":"stdout","time":19.843033398,"data":"デバイス: cpu\n"}
+,{"stream_name":"stdout","time":19.855326375,"data":"設定完了\n"}
+,{"stream_name":"stdout","time":20.989207849,"data":"MAX_CARD_ID: 1267\n"}
+,{"stream_name":"stdout","time":20.989253809,"data":"入力次元数 : 5658\n"}
+,{"stream_name":"stdout","time":21.003242216,"data":"モデル定義完了\n"}
+,{"stream_name":"stdout","time":21.212638763,"data":"リーダーボードなし → 全勝者を均等学習\n"}
+,{"stream_name":"stdout","time":21.227836269,"data":"解析対象: 1500 ファイル\n"}
+,{"stream_name":"stdout","time":225.781086586,"data":"マッチ試合数     : 1499\n"}
+,{"stream_name":"stdout","time":225.781148296,"data":"スキップ(未登録) : 0\n"}
+,{"stream_name":"stdout","time":225.781155776,"data":"有効サンプル数   : 88260\n"}
+,{"stream_name":"stdout","time":227.254565889,"data":"正規化パラメータ保存: /kaggle/working/ptcg_normalization.npz\n"}
+,{"stream_name":"stdout","time":228.830522351,"data":"学習: 70608 / 検証: 17652 サンプル\n"}
+,{"stream_name":"stdout","time":234.257137829,"data":"モデルパラメータ数: 6,454,016\n"}
+,{"stream_name":"stdout","time":234.294196628,"data":"== 学習開始 ==\n"}
+,{"stream_name":"stdout","time":256.410381858,"data":"Epoch  1/15  train loss=1.4110 acc=51.1%  |  val loss=1.3938 acc=51.2%  |  lr=1.00e-03\n"}
+,{"stream_name":"stdout","time":256.410470838,"data":"  → ベストモデル保存 (val_loss=1.3938, val_acc=51.2%)\n"}
+,{"stream_name":"stdout","time":278.592687556,"data":"Epoch  2/15  train loss=1.3315 acc=52.6%  |  val loss=1.3931 acc=51.6%  |  lr=1.00e-03\n"}
+,{"stream_name":"stdout","time":278.592770326,"data":"  → ベストモデル保存 (val_loss=1.3931, val_acc=51.6%)\n"}
+,{"stream_name":"stdout","time":300.292926561,"data":"Epoch  3/15  train loss=1.2946 acc=53.4%  |  val loss=1.4019 acc=50.5%  |  lr=1.00e-03\n"}
+,{"stream_name":"stdout","time":322.333370401,"data":"Epoch  4/15  train loss=1.2524 acc=54.7%  |  val loss=1.4006 acc=51.4%  |  lr=1.00e-03\n"}
+,{"stream_name":"stdout","time":344.687662894,"data":"Epoch  5/15  train loss=1.2293 acc=55.2%  |  val loss=1.4175 acc=50.7%  |  lr=1.00e-03\n"}
+,{"stream_name":"stdout","time":366.876060401,"data":"Epoch  6/15  train loss=1.1738 acc=56.8%  |  val loss=1.4335 acc=50.0%  |  lr=5.00e-04\n"}
+,{"stream_name":"stdout","time":389.013000666,"data":"Epoch  7/15  train loss=1.1330 acc=58.0%  |  val loss=1.4554 acc=51.1%  |  lr=5.00e-04\n"}
+,{"stream_name":"stdout","time":412.819823552,"data":"Epoch  8/15  train loss=1.1016 acc=59.1%  |  val loss=1.4650 acc=51.0%  |  lr=5.00e-04\n"}
+,{"stream_name":"stdout","time":436.65956416,"data":"Epoch  9/15  train loss=1.0646 acc=60.0%  |  val loss=1.4784 acc=50.2%  |  lr=2.50e-04\n"}
+,{"stream_name":"stdout","time":459.817386454,"data":"Epoch 10/15  train loss=1.0200 acc=61.5%  |  val loss=1.5013 acc=50.2%  |  lr=2.50e-04\n"}
+,{"stream_name":"stdout","time":483.380791707,"data":"Epoch 11/15  train loss=1.0041 acc=61.8%  |  val loss=1.5126 acc=49.9%  |  lr=2.50e-04\n"}
+,{"stream_name":"stdout","time":506.809670974,"data":"Epoch 12/15  train loss=0.9647 acc=63.1%  |  val loss=1.5334 acc=49.8%  |  lr=1.25e-04\n"}
+,{"stream_name":"stdout","time":529.026841059,"data":"Epoch 13/15  train loss=0.9490 acc=63.6%  |  val loss=1.5503 acc=49.3%  |  lr=1.25e-04\n"}
+,{"stream_name":"stdout","time":550.94663989,"data":"Epoch 14/15  train loss=0.9327 acc=64.0%  |  val loss=1.5669 acc=50.3%  |  lr=1.25e-04\n"}
+,{"stream_name":"stdout","time":573.179151426,"data":"Epoch 15/15  train loss=0.9229 acc=64.2%  |  val loss=1.5701 acc=49.3%  |  lr=6.25e-05\n"}
+,{"stream_name":"stdout","time":573.179219366,"data":"\n"}
+,{"stream_name":"stdout","time":573.179224906,"data":"== 学習完了 ==\n"}
+,{"stream_name":"stdout","time":573.179230616,"data":"ベストエポック: 2  val_acc=51.6%\n"}
+,{"stream_name":"stdout","time":574.469495318,"data":"グラフ保存: /kaggle/working/training_curve.png\n"}
+,{"stream_name":"stdout","time":574.493950861,"data":"== /kaggle/working/ の出力ファイル ==\n"}
+,{"stream_name":"stdout","time":574.493994311,"data":"  __notebook__.ipynb  (0.1 MB)\n"}
+,{"stream_name":"stdout","time":574.493998791,"data":"  training_curve.png  (0.1 MB)\n"}
+,{"stream_name":"stdout","time":574.494002071,"data":"  ptcg_baseline_model.pth  (24.6 MB)\n"}
+,{"stream_name":"stdout","time":574.494005211,"data":"  ptcg_normalization.npz  (0.0 MB)\n"}
+,{"stream_name":"stdout","time":574.494008231,"data":"\n"}
+,{"stream_name":"stdout","time":574.494011181,"data":"学習後にこれらのファイルをダウンロードして\n"}
+,{"stream_name":"stdout","time":574.494014371,"data":"submission/ フォルダに配置してください:\n"}
+,{"stream_name":"stdout","time":574.494017611,"data":"  ptcg_baseline_model.pth  → submission/ptcg_baseline_model.pth\n"}
+,{"stream_name":"stdout","time":574.494040361,"data":"  ptcg_normalization.npz   → submission/ptcg_normalization.npz\n"}
+,{"stream_name":"stderr","time":578.978548756,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":578.978601256,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":579.171943098,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":579.171991147,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":579.943753812,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":580.27017104,"data":"[NbConvertApp] Writing 319912 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":583.043572951,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":583.999902494,"data":"[NbConvertApp] Support files will be in __results___files/\n"}
+,{"stream_name":"stderr","time":583.999938934,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":584.000283844,"data":"[NbConvertApp] Writing 538603 bytes to __results__.html\n"}
+]

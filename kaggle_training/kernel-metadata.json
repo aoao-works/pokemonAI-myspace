@@ -1,0 +1,18 @@
+{
+  "id": "aoao0314/ptcg-weighted-training",
+  "title": "PTCG Weighted Training",
+  "code_file": "ptcg_weighted_train.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "dataset_sources": [
+    "kaggle/pokemon-tcg-ai-battle-episodes-2026-06-27"
+  ],
+  "competition_sources": [
+    "pokemon-tcg-ai-battle"
+  ],
+  "kernel_sources": []
+}
