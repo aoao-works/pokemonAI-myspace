@@ -603,12 +603,7 @@ def agent(obs_dict):
                     if op.type == OptionType.END:
                         return [i]
 
-            # MCTS (primary)
-            mcts_action = _mcts_search(obs)
-            if mcts_action is not None and 0 <= mcts_action < len(sel.option):
-                return [mcts_action]
-
-            # NN fallback
+            # NN (primary)
             nn_action = _nn_pick(obs, len(sel.option))
             if nn_action is not None:
                 return [nn_action]

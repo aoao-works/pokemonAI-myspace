@@ -15,7 +15,7 @@
 | **ローカルルールベース baseline** | 手書き戦略の強力なルールベース AI（約1400行） | `PTCGstadium/agents/baseline/main.py` |
 
 **ptcg_best_model.pth の 53.8% 勝率は Kaggle NN baseline に対するもの。**  
-ローカルルールベース baseline に対しては 21%（NN単体）、34%（ハイブリッド）しか勝てない。
+ローカルルールベース baseline に対しては 21%（NN単体）、31%（ハイブリッド）しか勝てない。
 
 ---
 
@@ -26,7 +26,7 @@ pokemonAI-myspace/
 ├── archive/              # 対戦リプレイデータ（JSON、約5,063件）
 ├── data/                 # カードデータCSV（MAX_CARD_ID=1267）
 ├── submission/           # ★ 現在の提出エージェント
-│   ├── main.py           # ハイブリッドエージェント（MCTS + NN fallback）
+│   ├── main.py           # NNエージェント（※MCTSは無効化済み、スコア低下のため）
 │   ├── deck.csv          # ルカリオデッキ（60枚）
 │   └── ptcg_best_model.pth  # ★ 現在の最良モデル
 ├── training/             # 学習スクリプト群
@@ -50,20 +50,36 @@ pokemonAI-myspace/
 
 | ファイル | 学習手法 | Kaggle NN baseline 勝率 | ローカル RB 勝率 |
 |---|---|---|---|
-| `ptcg_best_model.pth` | リーグ学習v2 | **53.8%** (1000戦) | 21% 単体 / 34% ハイブリッド |
+| ファイル | 学習手法 | Kaggle NN baseline 勝率 | ローカル RB 勝率 (arena 200戦) |
+|---|---|---|---|
+| `ptcg_best_model.pth` | リーグ学習v2 | **53.8%** (1000戦) | 21% 単体 |
 | `ptcg_league_model.pth` | リーグ学習v1 | 51.6% | — |
 | `ptcg_baseline_model.pth` | 模倣学習（Kaggle） | 基準 | — |
 | `ptcg_rl_model.pth` | PPO自己対戦 | ~48% | — |
-| `ptcg_rb_model.pth` | RL vs RB（失敗） | — | 34% ハイブリッド |
+| `ptcg_rb_model.pth` | PPO vs RB (opp_noise=0.5) | — | **31%** ハイブリッド |
 
-`ptcg_rb_model.pth` = `ptcg_best_model.pth` と同内容。
+⚠️ `ptcg_best_model.pth` は学習スクリプトから**絶対に上書きしてはならない**（Kaggle本番用）。  
+RB学習の出力は必ず `ptcg_rb_model.pth` または `--out-path` で別名指定すること。
 
 ---
 
 ## ハイブリッドエージェント
 
 **NN MAIN + ルールベース非MAIN** の組み合わせ（`PTCGstadium/agents/rb/main.py`）。  
-MAIN選択→NN、CARD/YES_NO/COUNT等の非MAIN→ルールベースで処理。ローカルRBに対して最強（34%）。
+MAIN選択→NN、CARD/YES_NO/COUNT等の非MAIN→ルールベースで処理。ローカルRBに対して31%。
+
+### Kaggle スコア履歴（publicScore、高いほど良い）
+
+| 提出日 | スコア | 備考 |
+|---|---|---|
+| 2026-06-18 | **558.4** | 歴代最高 |
+| 2026-06-23 | 551.7 | |
+| 2026-06-26 | 536.5 | |
+| 2026-06-27 | 529.4 | |
+| 2026-06-28 | 502.3 | MCTS追加 → **逆効果** |
+| 次回目標 | 540+ | MCTSなしNN単体で提出予定 |
+
+⚠️ **MCTS（ランダムロールアウト）はスコアを下げる**。`submission/main.py` では無効化済み。
 
 ---
 

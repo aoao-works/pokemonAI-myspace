@@ -193,13 +193,13 @@ def save_policy(model, path):
 # ============================================================
 # ゲーム収集: NN vs ルールベース
 # ============================================================
-def collect_game(main_model, rb_opp, rb_helper, norm_mean, norm_std, deck, seed, main_idx):
+def collect_game(main_model, rb_opp, rb_helper, norm_mean, norm_std, deck, seed, main_idx, opp_noise=0.0):
     """
     main_model (NN) vs ルールベースの 1 ゲームを実行し遷移を返す。
 
     - MAIN select (NN player): NN がサンプリング → 遷移を記録
     - 非MAIN select (NN player): rb_helper の完全ロジックを使用 (学習信号をクリーンに保つ)
-    - 全 select (相手): rb_opp の完全ロジックを使用
+    - 全 select (相手): rb_opp の完全ロジック (opp_noise>0 のとき一部ランダム)
 
     2 つの独立したモジュールインスタンスにより、NN側と相手側のターン追跡が干渉しない。
     """
@@ -207,7 +207,7 @@ def collect_game(main_model, rb_opp, rb_helper, norm_mean, norm_std, deck, seed,
     reset_rb_state(rb_helper)
     random.seed(seed)
 
-    transitions = []
+    transitions  = []
     turn_actions = {0: 0, 1: 0}
     last_turn    = {0: -1, 1: -1}
 
@@ -218,6 +218,11 @@ def collect_game(main_model, rb_opp, rb_helper, norm_mean, norm_std, deck, seed,
     main_model.eval()
     result = -1
 
+    # プライズカード差分による中間報酬
+    prev_my_prizes  = 6
+    prev_opp_prizes = 6
+    pending_reward  = 0.0
+
     for _step in range(4000):
         obs = to_observation_class(obs_dict)
         cur = obs.current
@@ -225,6 +230,14 @@ def collect_game(main_model, rb_opp, rb_helper, norm_mean, norm_std, deck, seed,
             result = cur.result; break
         if obs.select is None:
             break
+
+        # プライズ差分を中間報酬として積算
+        if cur is not None and len(cur.players) >= 2:
+            my_p  = sum(1 for p in cur.players[main_idx].prize          if p is not None)
+            opp_p = sum(1 for p in cur.players[1 - main_idx].prize      if p is not None)
+            if my_p  < prev_my_prizes:   pending_reward += 0.3 * (prev_my_prizes  - my_p)
+            if opp_p < prev_opp_prizes:  pending_reward -= 0.3 * (prev_opp_prizes - opp_p)
+            prev_my_prizes, prev_opp_prizes = my_p, opp_p
 
         sel = obs.select
         who = cur.yourIndex if cur is not None else 0
@@ -257,14 +270,20 @@ def collect_game(main_model, rb_opp, rb_helper, norm_mean, norm_std, deck, seed,
                         action = dist.sample()
                         lp = dist.log_prob(action)
                     a_idx = action.item()
-                    transitions.append((nsv.copy(), a_idx, lp.item(), v_est.item(), n_valid))
+                    transitions.append((nsv.copy(), a_idx, lp.item(), v_est.item(), n_valid, pending_reward))
+                    pending_reward = 0.0
                     obs_dict = battle_select([a_idx])
                     continue
             # 非MAIN または turn_actions > 40: rb_helper の完全ロジック
             obs_dict = battle_select(rb_helper.agent(obs_dict))
         else:
-            # 相手: rb_opp の完全ロジック
-            obs_dict = battle_select(rb_opp.agent(obs_dict))
+            # 相手: rb_opp (opp_noise > 0 のとき一定確率でランダム行動)
+            if opp_noise > 0.0 and random.random() < opp_noise:
+                _n = len(sel.option)
+                _k = max(getattr(sel, 'minCount', 1), 1)
+                obs_dict = battle_select(random.sample(range(_n), min(_k, _n)))
+            else:
+                obs_dict = battle_select(rb_opp.agent(obs_dict))
 
     battle_finish()
     reward = 1.0 if result == main_idx else (-1.0 if result == 1 - main_idx else 0.0)
@@ -277,11 +296,12 @@ def compute_gae(transitions, final_reward, gamma=0.99, lam=0.95):
     n = len(transitions)
     if n == 0:
         return [], []
-    values = np.array([t[3] for t in transitions], dtype=np.float32)
+    values    = np.array([t[3] for t in transitions], dtype=np.float32)
+    step_rews = np.array([t[5] if len(t) > 5 else 0.0 for t in transitions], dtype=np.float32)
     advantages = np.zeros(n, dtype=np.float32)
     last_adv = 0.0
     for t in reversed(range(n)):
-        r  = final_reward if t == n - 1 else 0.0
+        r  = step_rews[t] + (final_reward if t == n - 1 else 0.0)
         nv = 0.0 if t == n - 1 else values[t + 1]
         delta    = r + gamma * nv - values[t]
         last_adv = delta + gamma * lam * (0.0 if t == n - 1 else last_adv)
@@ -299,8 +319,8 @@ def ppo_update(model, ref_model, optimizer, all_trans,
     states       = torch.FloatTensor(np.array([t[0] for t in all_trans]))
     actions      = torch.LongTensor([t[1] for t in all_trans])
     old_lps      = torch.FloatTensor([t[2] for t in all_trans])
-    advantages   = torch.FloatTensor([t[5] for t in all_trans])
-    returns      = torch.FloatTensor([t[6] for t in all_trans])
+    advantages   = torch.FloatTensor([t[6] for t in all_trans])
+    returns      = torch.FloatTensor([t[7] for t in all_trans])
     valid_counts = [t[4] for t in all_trans]
 
     advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
@@ -367,13 +387,16 @@ def main():
     ap.add_argument("--kl-beta",    type=float, default=0.005)
     ap.add_argument("--eval-every", type=int,   default=20,  help="評価頻度 (iter)")
     ap.add_argument("--eval-games", type=int,   default=20,  help="評価ゲーム数")
+    ap.add_argument("--opp-noise",  type=float, default=0.0, help="対戦相手ノイズ率 0=フルRB / 0.5=半分ランダム")
+    ap.add_argument("--time-limit", type=int,   default=0,   help="最大学習時間（分、0=無制限）")
     ap.add_argument("--seed",       type=int,   default=300)
+    ap.add_argument("--out-path",   type=str,   default=None, help="出力モデルパス (省略時は ptcg_rb_model.pth)")
     args = ap.parse_args()
 
     SUBMISSION    = os.path.normpath(os.path.join(HERE, "..", "submission"))
     baseline_path = os.path.join(SUBMISSION, "ptcg_baseline_model.pth")
     best_path     = os.path.join(SUBMISSION, "ptcg_best_model.pth")
-    out_path      = os.path.join(SUBMISSION, "ptcg_rb_model.pth")
+    out_path      = args.out_path if args.out_path else os.path.join(SUBMISSION, "ptcg_rb_model.pth")
     log_path      = os.path.join(HERE, "train_rb_log.txt")
 
     with open(os.path.join(SUBMISSION, "deck.csv"), "r") as f:
@@ -448,7 +471,8 @@ def main():
             main_idx = 0 if g % 2 == 0 else 1
             seed = args.seed + total_games + g
             trans, reward = collect_game(
-                main_model, rb_opp, rb_helper, norm_mean, norm_std, deck, seed, main_idx
+                main_model, rb_opp, rb_helper, norm_mean, norm_std, deck, seed, main_idx,
+                opp_noise=args.opp_noise,
             )
             if reward > 0:   wins   += 1
             elif reward < 0: losses += 1
@@ -477,6 +501,10 @@ def main():
             f"p={p_loss:.4f}  v={v_loss:.4f}  kl={kl_loss:.4f}  "
             f"lr={cur_lr:.1e}  {elapsed:.1f}s  total={elapsed_total/60:.1f}min"
         )
+
+        if args.time_limit > 0 and (time.time() - t_start) / 60 >= args.time_limit:
+            log(f"時間制限 {args.time_limit}分 に達したため学習を停止します")
+            break
 
         if it % args.eval_every == 0:
             eval_wins = 0
@@ -511,13 +539,6 @@ def main():
         best_eval_wr = final_wr
         save_policy(main_model, out_path)
         log(f"最終モデルが最良 ({final_wr:.0%}) → {out_path} に保存")
-
-    # ptcg_best_model.pth も更新 (21% 超えた場合)
-    KNOWN_BEST_RB_WR = 0.21  # arena での現ベスト
-    if best_eval_wr > KNOWN_BEST_RB_WR:
-        import shutil
-        shutil.copy2(out_path, best_path)
-        log(f"=> ptcg_best_model.pth も更新 ({best_eval_wr:.0%} > {KNOWN_BEST_RB_WR:.0%})")
 
     total_min = (time.time() - t_start) / 60
     log(f"\n=== 学習完了 ({total_min:.1f}分) ===")

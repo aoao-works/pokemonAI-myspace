@@ -1,0 +1,40 @@
+[{"stream_name":"stderr","time":8.163095147,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.163192118,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.163198956,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.163202509,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.930961305,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.930997558,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.931018701,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.931024013,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":10.20086526,"data":"=== /kaggle/working/ の内容 ===\n"}
+,{"stream_name":"stdout","time":10.20094844,"data":"  __notebook__.ipynb  (7 KB)\n"}
+,{"stream_name":"stderr","time":10.629642673,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":10.629677008,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":10.629685591,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":10.629998556,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":10.630026061,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":10.630435048,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":10.630480142,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":10.630488069,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":10.630493658,"data":"Exception encountered at \"In [1]\":\n"}
+,{"stream_name":"stderr","time":10.630498414,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":10.630503412,"data":"RuntimeError                              Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":10.630507987,"data":"/tmp/ipykernel_16/115332961.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":10.630513234,"data":"     14 missing  = [f for f in required if not os.path.exists(os.path.join(WORKING, f))]\n"}
+,{"stream_name":"stderr","time":10.630518874,"data":"     15 if missing:\n"}
+,{"stream_name":"stderr","time":10.630525973,"data":"---\u003e 16     raise RuntimeError(f'必須ファイルが不足しています: {missing}\\n'\n"}
+,{"stream_name":"stderr","time":10.630536529,"data":"     17                        f'ローカルで prepare_kaggle_rl.py を実行してから再 push してください。')\n"}
+,{"stream_name":"stderr","time":10.630539954,"data":"     18 \n"}
+,{"stream_name":"stderr","time":10.630542884,"data":"\n"}
+,{"stream_name":"stderr","time":10.630545824,"data":"RuntimeError: 必須ファイルが不足しています: ['cg', 'rb_baseline.py', 'deck.csv', 'ptcg_best_model.pth', 'ptcg_normalization.npz', 'train_dense_rl.py']\n"}
+,{"stream_name":"stderr","time":10.630549428,"data":"ローカルで prepare_kaggle_rl.py を実行してから再 push してください。\n"}
+,{"stream_name":"stderr","time":10.63056714,"data":"\n"}
+,{"stream_name":"stderr","time":13.484064941,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":13.484109192,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":13.675137853,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":13.675168614,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":14.446376649,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":14.828302098,"data":"[NbConvertApp] Writing 9208 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":17.882093481,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":18.905495782,"data":"[NbConvertApp] Writing 291770 bytes to __results__.html\n"}
+]
