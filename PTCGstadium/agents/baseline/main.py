@@ -311,6 +311,92 @@ _ITEM_SWITCH    = CID_SWITCH
 _POKEMON_SEARCH_ITEMS = frozenset({_ITEM_POKEPAD, _ITEM_FIGHTGONG})
 
 
+def _hand_card_ids(obs: Observation) -> set[int]:
+    state = obs.current
+    if state is None:
+        return set()
+    your_state = state.players[state.yourIndex]
+    return {c.id for c in (your_state.hand or [])}
+
+
+def _fight_gong_should_prioritize_energy(obs: Observation) -> bool:
+    """ファイトゴングでエネルギーを優先して探すべき盤面か。"""
+    state = obs.current
+    if state is None:
+        return False
+    your_state = state.players[state.yourIndex]
+    card_cache = _get_card_data_cache()
+    field = _count_field_pokemon(your_state, card_cache)
+    return (
+        (field.get(CID_SOLROCK, 0) > 0 and field.get(CID_LUNATONE, 0) > 0)
+        or field.get(CID_MEGA_LUCARIO, 0) > 0
+    )
+
+
+def _planned_switch_target_index_from_state(state, your_idx: int) -> int | None:
+    """txt の優先順位に沿って、ポケモンいれかえ後に出すべきベンチ index を返す。"""
+    if state is None:
+        return None
+
+    your_state = state.players[your_idx]
+    opp_state = state.players[1 - your_idx]
+    opp_active = opp_state.active[0] if opp_state.active else None
+    if opp_active is None:
+        return None
+
+    hand_ids = {c.id for c in (your_state.hand or [])}
+    field_counts = _count_field_pokemon(your_state, _get_card_data_cache())
+    opp_hp = opp_active.hp
+
+    def bench_indices(card_id: int, min_energy: int = 0) -> list[int]:
+        return [
+            i for i, p in enumerate(your_state.bench)
+            if p.id == card_id and len(p.energies) >= min_energy
+        ]
+
+    # ① HP70以下ならソルロックへ
+    if (
+        opp_hp <= 70
+        and field_counts.get(CID_SOLROCK, 0) > 0
+        and field_counts.get(CID_LUNATONE, 0) > 0
+    ):
+        solrock = bench_indices(CID_SOLROCK, 1)
+        if solrock:
+            return solrock[0]
+
+    # ② 80-130 ならメガルカリオexへ
+    lucario_1 = bench_indices(CID_MEGA_LUCARIO, 1)
+    if 80 <= opp_hp <= 130 and lucario_1:
+        return lucario_1[0]
+
+    # ③ 130-160 かつパワープロテイン使用可ならメガルカリオexへ
+    if 130 <= opp_hp <= 160 and CID_POWER_PROTEIN in hand_ids and lucario_1:
+        return lucario_1[0]
+
+    # ④ 140以上ならメガルカリオexの2枚目へ
+    lucario_2 = bench_indices(CID_MEGA_LUCARIO, 2)
+    if opp_hp >= 140 and lucario_2:
+        return lucario_2[0]
+
+    # ⑦ 210以下ならハリテヤマへ
+    hariteyama_3 = bench_indices(CID_HARITEYAMA, 3)
+    if opp_hp <= 210 and hariteyama_3:
+        return hariteyama_3[0]
+
+    # ⑧ 220-240 かつパワープロテイン使用可ならハリテヤマへ
+    if 220 <= opp_hp <= 240 and CID_POWER_PROTEIN in hand_ids and hariteyama_3:
+        return hariteyama_3[0]
+
+    return None
+
+
+def _planned_switch_target_index(obs: Observation) -> int | None:
+    state = obs.current
+    if state is None:
+        return None
+    return _planned_switch_target_index_from_state(state, state.yourIndex)
+
+
 def _need_basic_target(obs: Observation) -> bool:
     """目標たねポケモン（リオル等）が場で上限未満かつ手札に無い → サーチの価値あり"""
     state = obs.current
@@ -337,6 +423,11 @@ def _need_mega_lucario(obs: Observation) -> bool:
     if field.get(CID_RIOLU, 0) <= 0 or field.get(CID_MEGA_LUCARIO, 0) > 0:
         return False
     return not any(c.id == CID_MEGA_LUCARIO for c in (your_state.hand or []))
+
+
+def _need_fight_gong_energy(obs: Observation) -> bool:
+    """ファイトゴングでエネルギーを狙うべきか。"""
+    return _fight_gong_should_prioritize_energy(obs)
 
 
 def _should_play_lillie(obs: Observation) -> bool:
@@ -366,29 +457,25 @@ def _should_play_lillie(obs: Observation) -> bool:
 
 
 def _should_play_switch_item(obs: Observation) -> bool:
-    """ポケモンいれかえ（エネ不要の交代）: V(交代後) > V(現状) なら使う（にげるコスト0）"""
+    """ポケモンいれかえ: txt にある切り替え条件に合うときだけ使う。"""
     state = obs.current
     if state is None:
         return False
     your_idx = state.yourIndex
     your_state = state.players[your_idx]
-    card_cache = _get_card_data_cache()
     active = your_state.active[0] if your_state.active else None
     if active is None:
         return False
-    cand, _ = _best_bench_switch_candidate(state, your_idx)
-    if cand is None:
+    if active.id not in (CID_LUNATONE, CID_MAKUNOSHITA, CID_HARITEYAMA):
         return False
-    if active.id in _RETREAT_EXCEPTIONS:
-        return True
-    stay_v   = _evaluate(state, your_idx, active_override=active)
-    switch_v = _evaluate(state, your_idx, active_override=cand)
-    return switch_v > stay_v
+    return _planned_switch_target_index(obs) is not None
 
 
 def _should_play_item(card_id: int, obs: Observation) -> bool:
     """汎用グッズの使用可否。サーチ/補充/交代系は条件で温存判断、その他は常に使う。"""
     if card_id in _POKEMON_SEARCH_ITEMS:
+        if card_id == _ITEM_FIGHTGONG:
+            return _need_basic_target(obs) or _need_fight_gong_energy(obs)
         return _need_basic_target(obs)
     if card_id == _ITEM_HYPERBALL:
         return _need_basic_target(obs) or _need_mega_lucario(obs)
@@ -530,6 +617,7 @@ def _select_search_target(obs: Observation) -> list[int]:
     your_state = state.players[your_idx]
     card_cache = _get_card_data_cache()
     field_counts = _count_field_pokemon(your_state, card_cache)
+    prefer_energy = _fight_gong_should_prioritize_energy(obs)
 
     def get_card_data(opt):
         # 直接 ID フィールドを持つ場合
@@ -551,7 +639,10 @@ def _select_search_target(obs: Observation) -> list[int]:
     for i, opt in enumerate(options):
         cd   = get_card_data(opt)
         cid  = cd.cardId if cd else -1
-        prio = _SEARCH_PRIORITY.get(cid, 20)
+        if cd is not None and prefer_energy and cd.cardType in (CardType.BASIC_ENERGY, CardType.SPECIAL_ENERGY):
+            prio = -10
+        else:
+            prio = _SEARCH_PRIORITY.get(cid, 20)
         if field_counts.get(cid, 0) >= _FIELD_TARGETS.get(cid, 99):
             prio += 30   # 既に在場上限 → 優先度下げ
         scored.append((prio, i))
@@ -1013,9 +1104,12 @@ def _usable_damage(poke, card_cache: dict, attack_cache: dict, defender=None) ->
 
 
 def _best_bench_switch_candidate(state, your_idx: int):
-    """交代先に最適な非例外ベンチポケモンと、そのベンチindexを返す（なければ (None, -1)）。"""
+    """交代先に最適なベンチポケモンと、そのベンチindexを返す（なければ (None, -1)）。"""
     your_state = state.players[your_idx]
-    card_cache = _get_card_data_cache()
+    planned = _planned_switch_target_index_from_state(state, your_idx)
+    if planned is not None and 0 <= planned < len(your_state.bench):
+        return your_state.bench[planned], planned
+
     best, best_i, best_hp = None, -1, -1
     for i, p in enumerate(your_state.bench):
         if p.id in _RETREAT_EXCEPTIONS:
@@ -1129,7 +1223,7 @@ def _should_retreat(obs: Observation) -> bool:
 
 
 def _select_switch_target(obs: Observation) -> list[int]:
-    """にげる後のベンチ選択: 非例外ポケモンの中で最大HPを選ぶ"""
+    """ポケモンいれかえ / にげる後のベンチ選択: txt の優先順位に合わせる。"""
     state   = obs.current
     options = obs.select.option
 
@@ -1138,7 +1232,14 @@ def _select_switch_target(obs: Observation) -> list[int]:
 
     your_idx   = state.yourIndex
     your_state = state.players[your_idx]
-    card_cache = _get_card_data_cache()
+
+    planned_index = _planned_switch_target_index_from_state(state, your_idx)
+    if planned_index is not None:
+        for i, opt in enumerate(options):
+            area  = getattr(opt, 'area', None)
+            index = getattr(opt, 'index', None)
+            if area == AreaType.BENCH and index == planned_index:
+                return [i]
 
     best_i  = 0
     best_hp = -1

@@ -18,7 +18,7 @@ arena.py — ローカルでエージェント同士を対戦させる対戦場�
     cd PTCGstadium                                            # スクリプトと同じディレクトリに移動
 
     #いくつかの例:
-    python arena.py --p0 agents/v1 --p1 agents/v2 --games 100 # 100戦・先攻後攻を入れ替え
+     python arena.py --p0 agents/v1 --p1 agents/v2 --games 100# 100戦・先攻後攻を入れ替え
     python arena.py --p0 agents/v1 --p1 random                # 組み込みのランダム相手
     python arena.py --p0 agents/v1 --p1 agents/v2 --replay    # 1戦目を replay.html に可視化
  
