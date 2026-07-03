@@ -74,10 +74,18 @@ CID_BELL        = 1190  # ベルのまごころ（残HP30以下の味方を全�
 # --- 定番トレーナー（複数デッキ共通。無いデッキは 0 で無効化）---
 CID_BOSS            = 1182  # ボスの指令
 CID_LILLIE          = 1227  # リーリエの決心
+CID_MATSUBA         = 1187  # マツバの確信（手札1枚トラッシュ→相手ベンチ数ぶんドロー）
 CID_POKE_PAD        = 1152  # ポケパッド
 CID_ULTRA_BALL      = 0     # このデッキには無い
 CID_NIGHT_STRETCHER = 0     # このデッキには無い
 CID_SWITCH          = 1123  # ポケモンいれかえ
+
+# --- 山札切れ回避のしきい値 ---
+# 壁デッキは長期戦になりやすく、大量ドロー系サポート（リーリエ/マツバ）を
+# 使い続けると勝敗が付く前に自分の山札が切れて負けることが多い
+# （2026-07-04計測: 敗因の約4割が自分の山札切れ）。残り山札がこの枚数以下に
+# なったら、緊急性の低い大量ドローは温存してターンを稼ぐ。
+_DECKOUT_GUARD_THRESHOLD = 15
 
 # --- 目標盤面（ID: 在場したい数）。理想盤面の構築度（V.field_setup）にも使う ---
 # イワパレスを複数立てて壁にするため、起点のイシズマイを多めに確保する。
@@ -151,13 +159,17 @@ _CONDITIONAL_CARDS: frozenset[int] = frozenset()
 # --- 絶対に捨てないカード（捨て先選択で保護）---
 _DISCARD_PROTECT: frozenset[int] = frozenset()
 
-# --- サポーターID と 使用優先（小さいほど先。ボス/リーリエは中核で個別判断）---
-_SUPPORTER_IDS: frozenset[int] = frozenset({CID_BOSS, CID_LILLIE, 1187, 1190, 1219, 1225})
+# --- サポーターID と 使用優先（小さいほど先。ボス/リーリエ/ベルは中核で個別判断）---
+# ボスは「今ターン実際にKO/スナイプできる的がある」時は最優先（5）でサーチ系より
+# 先に使う（取り逃すと相手に退避・回復されるため）。攻撃準備が無い/的が無い時のみ
+# stall用に低優先（55）で使う。サーチ系（トウコ/ラムダ/マツバ）は常時有用だが、
+# ボスの確定KOを逃してまで使う理由は無いため中間の優先度に据える。
+_SUPPORTER_IDS: frozenset[int] = frozenset({CID_BOSS, CID_LILLIE, CID_MATSUBA, 1190, 1219, 1225})
 _SUPPORTER_PRIORITY: dict[int, int] = {
-    1225: 10,   # トウコ（進化ポケモン＋エネをサーチ）
-    1219: 11,   # ロケット団のラムダ（トレーナーズをサーチ）
-    1187: 12,   # マツバの確信（ドロー）
-    1190: 40,   # ベルのまごころ（回復, 状況限定）
+    1190: 15,   # ベルのまごころ（瀕死回避、緊急性が高い）
+    1225: 20,   # トウコ（進化ポケモン＋エネをサーチ）
+    1219: 21,   # ロケット団のラムダ（トレーナーズをサーチ）
+    1187: 22,   # マツバの確信（ドロー）
 }
 
 # --- ポケモンをサーチするグッズ（盤面が埋まっていれば温存）---
@@ -403,12 +415,16 @@ def _need_basic_target(obs: Observation) -> bool:
 
 
 def _should_play_lillie(obs: Observation) -> bool:
-    """リーリエの決心（手札を戻して6/8枚引く）を使う価値があるか。"""
+    """リーリエの決心（手札を戻して6/8枚引く）を使う価値があるか。
+    山札が残り少ない時は、それ以上の大量ドローが山札切れ負けを早めるだけなので、
+    手札が壊滅的に少ない（他に打つ手が無い）場合を除き温存する。"""
     state = obs.current
     if state is None:
         return True
     your_state = state.players[state.yourIndex]
     hand = your_state.hand or []
+    if your_state.deckCount <= _DECKOUT_GUARD_THRESHOLD and len(hand) > 1:
+        return False
     if len(your_state.prize) >= 6:
         return True
     if len(hand) <= 4:
@@ -422,11 +438,29 @@ def _should_play_lillie(obs: Observation) -> bool:
     return bool(not has_energy and not state.energyAttached)
 
 
-def _should_play_boss(obs: Observation) -> bool:
-    """ボスの指令を使うべき状況か（バトル場を倒せない＋ベンチに倒せる相手、または stall）。"""
+def _should_play_matsuba(obs: Observation) -> bool:
+    """マツバの確信（手札1枚トラッシュ→相手ベンチ数ぶんドロー）を使う価値があるか。
+    山札が残り少ない時は、大量ドローが山札切れ負けを早めるだけなので温存する。
+    相手のベンチが空ならドロー0枚で無価値なので使わない。"""
     state = obs.current
     if state is None:
         return True
+    your_idx  = state.yourIndex
+    your_state = state.players[your_idx]
+    opp_state  = state.players[1 - your_idx]
+    if your_state.deckCount <= _DECKOUT_GUARD_THRESHOLD:
+        return False
+    return len(opp_state.bench) > 0
+
+
+def _boss_priority(obs: Observation) -> int | None:
+    """ボスの指令の優先度（小さいほど優先、None=今ターンは使わない）。
+    ベンチに実際にKO/スナイプできる的がある「確定KOの好機」は最優先（5）で
+    トウコ等のサーチより先に使う（1ターン待つと相手に退避・回復されて機会を失うため）。
+    攻撃準備が無い/的が無い場合は stall 時のみ低優先（55）で足止めに使う。"""
+    state = obs.current
+    if state is None:
+        return 5
     your_idx   = state.yourIndex
     your_state = state.players[your_idx]
     opp_state  = state.players[1 - your_idx]
@@ -436,24 +470,29 @@ def _should_play_boss(obs: Observation) -> bool:
     your_active = your_state.active[0] if your_state.active else None
     opp_active  = opp_state.active[0] if opp_state.active else None
     if your_active is None or len(your_active.energies) == 0:
-        return _is_stalled(state)
+        return 55 if _is_stalled(state) else None
 
     best_dmg = _best_attack_damage(your_active, card_cache, attack_cache)
     bench_ko = [p for p in opp_state.bench if p.hp <= best_dmg]
     if opp_active is not None and opp_active.hp <= best_dmg:
-        return any(_is_ex_pokemon(p, card_cache) for p in bench_ko)
-    return bool(bench_ko) or _is_stalled(state)
+        return 5 if any(_is_ex_pokemon(p, card_cache) for p in bench_ko) else None
+    if bench_ko:
+        return 5
+    return 55 if _is_stalled(state) else None
 
 
 def _supporter_sort_key(card_id: int, obs: Observation) -> int:
     """サポーターの使用優先度（小さいほど優先、999=今ターンは使わない）。
-    ボス/リーリエは中核で個別判断、その他は DECK CONFIG の _SUPPORTER_PRIORITY。"""
+    ボス/リーリエ/ベル/マツバは中核で個別判断、その他は DECK CONFIG の _SUPPORTER_PRIORITY。"""
     if card_id == CID_BOSS:
-        return 50 if _should_play_boss(obs) else 999
+        prio = _boss_priority(obs)
+        return prio if prio is not None else 999
     if card_id == CID_LILLIE:
-        return 40 if _should_play_lillie(obs) else 999
+        return 45 if _should_play_lillie(obs) else 999
     if card_id == CID_BELL:
-        return _SUPPORTER_PRIORITY.get(CID_BELL, 40) if _should_play_bell(obs) else 999
+        return _SUPPORTER_PRIORITY.get(CID_BELL, 15) if _should_play_bell(obs) else 999
+    if card_id == CID_MATSUBA:
+        return _SUPPORTER_PRIORITY.get(CID_MATSUBA, 22) if _should_play_matsuba(obs) else 999
     return _SUPPORTER_PRIORITY.get(card_id, 30)
 
 
@@ -908,6 +947,35 @@ def _select_switch_target(obs: Observation) -> list[int]:
     return [best_i]
 
 
+def _select_heal_target(obs: Observation) -> list[int]:
+    """HEAL（ベルのまごころ等の回復対象選択）。バトル場（攻撃に晒され続ける）を最優先し、
+    同条件ならHP割合が低い体を優先する。"""
+    state = obs.current
+    options = obs.select.option
+    max_count = obs.select.maxCount
+    if state is None or not options:
+        return list(range(min(max_count, len(options))))
+
+    your_idx = state.yourIndex
+    your_state = state.players[your_idx]
+
+    def score(i: int) -> tuple:
+        opt = options[i]
+        area = getattr(opt, 'area', None)
+        index = getattr(opt, 'index', None)
+        poke = None
+        if area == AreaType.ACTIVE and your_state.active:
+            poke = your_state.active[0]
+        elif area == AreaType.BENCH and index is not None and 0 <= index < len(your_state.bench):
+            poke = your_state.bench[index]
+        if poke is None or poke.maxHp <= 0:
+            return (1, 1.0, i)
+        is_bench = 0 if area == AreaType.ACTIVE else 1
+        return (is_bench, poke.hp / poke.maxHp, i)
+
+    return sorted(range(len(options)), key=score)[:max_count]
+
+
 def _route_card_selection(obs: Observation) -> list[int]:
     """CARD 選択をコンテキスト/特徴から適切なハンドラに振り分ける。"""
     state = obs.current
@@ -1229,6 +1297,8 @@ def agent(obs_dict: dict) -> list[int]:
             return _select_bench_placement(obs)
         if obs.select.context in (SelectContext.SWITCH, SelectContext.TO_ACTIVE):
             return _select_switch_target(obs)
+        if obs.select.context == SelectContext.HEAL:
+            return _select_heal_target(obs)
         return _route_card_selection(obs)
 
     if sel_type == SelectType.YES_NO:
