@@ -4,3 +4,5 @@ data/
 sample_submission/
 
 kaggle.json
+__pycache__/
+*.pyc

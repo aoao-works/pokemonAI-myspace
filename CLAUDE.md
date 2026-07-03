@@ -36,11 +36,9 @@ pokemonAI-myspace/
 ├── PTCGstadium/          # ローカル対戦・評価環境
 │   ├── arena.py          # エージェント間対戦
 │   └── agents/
-│       ├── baseline/main.py  # ★ ローカルルールベース baseline（強力）
-│       ├── rb/main.py        # ハイブリッド（NN MAIN + RB 非MAIN）
-│       ├── best/main.py      # ptcg_rb_model.pth 優先ロード
-│       ├── league/main.py    # リーグモデル
-│       └── rl/main.py        # PPO自己対戦モデル
+│       ├── baseline/main.py   # ★ ローカルルールベース baseline（評価用の固定相手、強力）
+│       ├── iwaparesu/main.py  # ★ 現在最強のローカル候補エージェント（イワパレスデッキ）
+│       └── archive/           # 引退した候補エージェント（best, rb, league, rl, kichikigisu 等、gitignore対象・ローカルのみ）
 └── デッキ集/             # ドラパルト・イワパレス等の代替デッキ
 ```
 
