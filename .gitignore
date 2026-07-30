@@ -2,7 +2,11 @@ archive/
 card_images/
 data/
 sample_submission/
+heroz_replays/data/
+heroz_replays/raw_html/
 
 kaggle.json
 __pycache__/
 *.pyc
+kaggle_replays/
+submission.tar.gz
