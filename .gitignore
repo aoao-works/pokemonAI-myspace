@@ -10,3 +10,4 @@ __pycache__/
 *.pyc
 kaggle_replays/
 submission.tar.gz
+automation/logs/
