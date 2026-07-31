@@ -22,12 +22,18 @@ Rules:
 
 ### Unresolved
 
-- **Buddy-Buddy Poffin (1086) validation pending**: ref `55137619` (2026-07-31 run #3)
-  added 2x Buddy-Buddy Poffin (cut 1x Jumbo Ice + 1x Bell's Sincerity) to fix the
-  "never got Dwebble into play" loss pattern (see run #3 entry below). Check next run
-  whether the "0 Dwebble/Crustle ever in play" loss rate actually drops from this
-  run's 6/17 (35%), and whether cutting Jumbo Ice/Bell's Sincerity caused any new
-  "died to damage we could've healed through" losses (watch for it, small sample risk).
+- **Xerosic's Machinations (1197) validation pending**: ref `55148965` (2026-08-01
+  run #4) added 2x Xerosic's Machinations (caps opponent's hand at 3 cards, only
+  played via `_should_play_xerosic()` when opponent's handCount >= 7) to counter the
+  "Alakazam Powerful Hand hand-hoarding" loss pattern found this run (see dated entry
+  below — 6/23 losses featured the Abra/Kadabra/Alakazam line, only 1 win, and two
+  separate games saw a single Powerful Hand hit for 480/500 damage one-shotting a
+  full-HP Pokémon with no positional counter available). Check next run: (a) does the
+  Alakazam-line win rate improve from this run's 1/7 (14%)? (b) is Xerosic actually
+  firing in those games (check replay logs for attackId/cardId 1197 usage — if the
+  opponent's hand never got read as >=7 before the kill shot, the threshold may need
+  lowering); (c) any sign the trim to Toko/Morty's Conviction (below) cost us
+  something (e.g. more "never found Crustle" or "ran out of draw" losses).
 - **Self-referential "damage counters already on this/opponent's Pokémon" attacks**
   (Flail, Wrathful Hearth, Powerful Rage, Damage Beat, Scarring Shout, etc.) are still
   unestimated in `_usable_damage()` (found 2026-07-31 run #2). Would need to read
@@ -36,17 +42,25 @@ Rules:
 - **Discard-pile-count-based damage attacks** (e.g. Re-Brew) — noted in run #2 as
   another `atk.damage == 0` pattern not yet estimated, lower priority than the
   self-referential family above (rarer in observed replays so far).
-- **Toko (1225, x3) may be partly redundant**: found in run #3 — Dwebble's own
-  "Ascension" attack already searches the deck for Crustle automatically when used
-  (no separate tutor needed), so Toko's "search 1 evolution Pokémon + 1 energy"
-  mostly only has unique value for the energy half once Dwebble is out, and is dead
-  weight (searches Crustle you can't yet play) before Dwebble is out. Did not touch
-  this run to keep the change surgical (one lever at a time) — worth reconsidering
-  once the Poffin fix's real impact is known, since freeing more slots for Poffin or
-  other basic-stage support might compound.
 
 ### Resolved
 
+- **Buddy-Buddy Poffin (1086) validated**: checked run #4 (2026-08-01) against ref
+  `55137619`'s real replays (37 games). The "Dwebble/Crustle line never got into
+  play" loss share dropped to **1/23 (4%)**, down hard from run #3's pre-fix 6/17
+  (35%) — a clear, large improvement, confirming the fix works as intended. (The
+  score itself came back lower — 507.2 vs the prior 549.7/571.9 — but per this
+  project's own noise-tolerance rule, a single aggregate score is not the signal;
+  the specific loss-pattern rate is, and it moved decisively in the right direction.)
+  No new "died to damage we could've healed through" pattern attributable to cutting
+  Jumbo Ice/Bell's Sincerity was found in this round's losses.
+- **Toko (1225, x3) redundancy**: addressed run #4 (2026-08-01, ref `55148965`) —
+  trimmed 3→2 copies (not all the way to 1) now that Poffin's fix (above) confirms
+  Dwebble reliably reaches the bench without needing Toko as a backup route; kept 2
+  rather than 1 because Toko's "search 1 energy" half still has standalone value once
+  Dwebble/Crustle is already out. Freed 1 of the 2 slots this trim created; the other
+  came from cutting 1x Morty's Conviction (1187, 2→1) — see dated entry for full
+  rationale. Both went toward the 2x Xerosic's Machinations add above.
 - **Alakazam-line loss rate after the damage-counter-estimate fix** (opened run #2,
   2026-07-31): checked in run #3 against ref `55129961`'s real replays (34 games).
   Alakazam line (741/742/743) appeared in 4 games this round: 1 win / 3 losses (25%
@@ -62,6 +76,134 @@ Rules:
   the ex-immunity-vs-"ignores defender effects" bypass, and the damage-counter-attack
   blind spot — were resolved before this section existed and are only referenced
   informally in the entries below.)*
+
+---
+
+## 2026-08-01 (loop run #4, ~00:15-00:52 JST)
+
+**Orientation**: Read the backlog first. Top item was "Buddy-Buddy Poffin validation
+pending" from run #3 (ref `55137619`).
+
+**Current standing**:
+- `55137619` (the Poffin fix) came back at **507.2** — lower than run #3's read of
+  it (549.7, later updated to 571.9 in the submissions list — Kaggle appears to
+  revise scores after more games are played against a submission). Also lower than
+  the immediately-prior `55129961` (571.9) and `55123159` (530.8). Leaderboard
+  (fresh CSV, 6052 teams): bronze cutoff (top 10%, rank 605) = **837.4**, essentially
+  flat vs run #3's 841.1. We're rank 3864, displayed score 571.9 (best-ever, not
+  latest). Submissions today (08-01) before this run: 0 — safe to submit.
+
+**Replay analysis of `55137619`** (all 37 public episodes, same
+active/bench/hand/prize full-game-trace methodology as prior runs — note: the
+`prize` array elements are always `null` even for our own side, presumably face-down
+by design; only `len(prize)` — remaining prize count — is usable, not the contents).
+- Record: **14-23 (37.8%)**, consistent with 507.2.
+- **Poffin fix validated hard**: only **1/23 losses (4%)** now show the Dwebble/
+  Crustle line never reaching play at all, down from run #3's pre-fix 6/17 (35%).
+  Moved to Resolved in the backlog above. This is a clean, unambiguous win even
+  though the aggregate score this round was mediocre — the score drop has a
+  different, better-evidenced cause below, not this fix backfiring.
+- **New/biggest finding this run**: tallied opponent rosters across the 23 losses.
+  The **Abra/Kadabra/Alakazam line (741/742/743) appeared in 6/23 losses and only
+  1/7 total appearances were wins (14% win rate)** — by far the single worst
+  matchup, worse even than run #3's already-flagged 25% post-fix reading (small
+  samples both times, but the direction is bad, not improving).
+  Traced two of these losses turn-by-turn (not just final snapshot):
+  - ep `89147429` (loss vs "立て板に水"): our board was fully healthy (2x Zarude,
+    120/120 HP each) but the opponent had **25 cards in hand** and a nearly-empty
+    deck (1 card left) by turn 25 — a deliberate hand-hoarding strategy. Their
+    Alakazam's "Powerful Hand" (attackId 1072, `n cards in hand × 2 counters ×
+    10 HP`) hit our Crustle for **-480** (24 cards) at step 156, then hit our
+    fresh Zarude for **-500** (25 cards) just 12 steps later at step 168 — an
+    outright OHKO on *any* Pokémon we could put in the active slot, with no
+    retreat/positioning counterplay possible since the next-in-line Pokémon dies
+    to the exact same attack next turn.
+  - Checked the opponent's hand-count trajectory across the whole game: normal
+    range (turns 0-13) was 3-6 cards, then it jumped to 14 at turn 14 and kept
+    climbing (18, 23, 24, 25) — a clear, sharp inflection point distinguishing
+    "hoarding mode" from ordinary play, not a gradual drift.
+  - ep `89147934` (loss vs Shiyuanhe123) showed the same Alakazam-line signature
+    in the opponent roster (also present: id 66/Kadabra, 305, 741/742/743).
+
+**Root cause**: this is *not* a threat-detection gap — run #2's
+`_effect_damage_estimate()` fix (which taught `_usable_damage()` to read Powerful
+Hand's real damage from hand-count) is doing its job; the problem is that once an
+opponent's hand is large enough, Powerful Hand becomes an unconditional OHKO on
+*whichever* Pokémon we have active, and retreating/switching just presents a new,
+equally-doomed target next turn. There is no positional or HP-based counterplay to
+a large-enough Powerful Hand — the only real counter is preventing the opponent's
+hand from ever getting that large in the first place.
+
+**Fix applied** (`PTCGstadium/agents/iwaparesu_yoshida_v2/main.py` +
+`deck.csv`): added 2x **Xerosic's Machinations** (card id 1197, Supporter: "Your
+opponent discards cards from their hand until they have 3 cards in their hand").
+This directly caps the maximum possible Powerful Hand damage at 3×2×10=60 (trivial)
+regardless of how long the opponent has been hoarding. Wired identically to the
+existing Bell/Toko conditional-supporter pattern:
+- `CID_XEROSIC = 1197`, added to `_SUPPORTER_IDS`.
+- New `_should_play_xerosic(obs)`: returns `True` only when the opponent's
+  `handCount >= _XEROSIC_HAND_THRESHOLD` (set to **7**, comfortably above the 3-6
+  card range observed in ordinary play this round, but well before the
+  14→18→23→24→25 hoarding trajectory becomes lethal — the goal is to interrupt the
+  snowball early, not just react once it's already dangerous).
+- `_supporter_sort_key()`: new branch returning priority 19 (between Crispin=17 and
+  Toko=20) when `_should_play_xerosic()` is true, else 999 (skip this turn) — same
+  "priority if condition met else 999" idiom used by Bell/Matsuba/Lillie, so it
+  slots into the existing generic supporter-selection pipeline
+  (`_best_play_index()` → `CardType.SUPPORTER` → `_supporter_sort_key`) with no
+  other code paths to touch.
+- **Deck slot funding**: to keep this a pure 60-card swap, trimmed 2 slots from
+  cards judged least load-bearing given what run #3/#4 have now confirmed:
+  - Toko (1225) 3→2: backlog already flagged this as "worth reconsidering once
+    Poffin's real impact is known" — it's now known (Poffin fixed the Dwebble-access
+    problem hard, see Resolved above), so Toko's redundant "search Crustle" half is
+    less necessary. Kept 2 (not 1) because its "search 1 energy" half still has
+    standalone value once Dwebble/Crustle is already in play.
+  - Morty's Conviction (1187) 2→1: a secondary card-advantage Supporter, judged
+    less central than the Boss/Lillie/Petrel-Factory engine pieces (which have
+    explicit code-level protection/priority already) — a modest trim, not a
+    structural change.
+
+Deliberately did **not** touch the Boss's Orders / Lillie / Team Rocket's
+Factory-Petrel draw engine, `_EX_IMMUNE_POKEMON`, or any retreat/switch logic —
+this is purely a new supporter card plus a funding trim, following the project's
+own caution against bundling unrelated changes.
+
+**Testing**:
+- `sort -n deck.csv | uniq -c`: 60 lines, max 4 of any id (1159 ACE SPEC still at
+  1), confirmed 1197 at 2 copies, 1187 at 1, 1225 at 2.
+- `python -c "import ast; ast.parse(...)"` on `main.py`: syntax OK.
+- Smoke test: `arena.py --p0 agents/iwaparesu_yoshida_v2 --p1 agents/archive/baseline
+  --games 40` → 55.0% win rate, **errors: 0**. Baseline doesn't run Alakazam, so
+  (per this loop's own rules) this only confirms no crash, not whether Xerosic
+  actually helps — the card imported/parsed fine (engine recognizes id 1197 as a
+  legal card, no exceptions during 40 games).
+- Verified `submission/main.py` imports standalone (`import main; main.agent`
+  callable, `main.read_deck_csv()` returns 60 cards) after syncing `main.py`/
+  `deck.csv` into `submission/` (`cg/` already in sync aside from `__pycache__`).
+- Submitted: ref **`55148965`**, 2026-08-01 (~2026-07-31 23:52 UTC per Kaggle's
+  submission-list timestamp), PENDING at time of writing. **Check its score/replays
+  next run — see the new Open Items entry above for exactly what to look for.**
+
+**Method note**: the `prize` field in the observation JSON is an array of `null`
+entries for *both* sides even in your own perspective's final snapshot — only its
+*length* (remaining prizes to take) is usable, not per-card contents. Don't try to
+read prize contents expecting card IDs; there aren't any exposed there.
+
+**For the next run**:
+1. First check ref `55148965`'s score and, more importantly, pull its replays and
+   check the Alakazam-line matchup specifically: did the win rate improve from this
+   run's 1/7 (14%)? Check whether Xerosic's Machinations (attackId/cardId 1072/1197
+   in the logs) actually got played in those games — if the opponent's hand never
+   reached the >=7 threshold before a lethal Powerful Hand, consider lowering
+   `_XEROSIC_HAND_THRESHOLD`.
+2. Watch for any regression traceable to the Toko/Morty's Conviction trims (e.g. a
+   new "couldn't find Crustle" or "ran out of draw options" pattern) — small risk,
+   flagged in the backlog, not expected to be large since both were partial (not
+   full) cuts.
+3. The self-referential damage-counter-attack family and discard-pile-count attacks
+   (both still in the backlog) remain unaddressed — still no confirmed real-game
+   cost, still lower priority than the items above.
 
 ---
 

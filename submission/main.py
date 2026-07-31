@@ -94,6 +94,13 @@ CID_NIGHT_STRETCHER = 1097  # 夜のタンカ（トラッシュのポケモン/�
                             # なのに場・手札のリソースが尽きて負け」というパターンが確認された。
                             # 倒れた本体を回収して場を持たせるための直接対策。
 CID_SWITCH          = 1123  # ポケモンいれかえ
+CID_XEROSIC         = 1197  # クセロシキの策略（相手の手札を3枚まで減らす＝強制トラッシュ）
+                            # 実戦リプレイ解析（2026-08-01）: アラカザムの「パワフルハンド」
+                            # （手札1枚につき2個ダメカン）を使う「手札を意図的に貯め込む」相手に
+                            # 2戦で480/500ダメージの即死級一撃を受けた（相手手札24-25枚）。
+                            # このワザは_effect_damage_estimateで検知はできるが、壁の生命線である
+                            # 「にげる」では回避不能（どのポケモンに交代しても次ターンまた即死圏）。
+                            # 相手の手札を3枚まで強制的に減らせば同ワザの被害は最大60まで縮む。
 
 # --- 高速化用トレーナー ---
 # クリスピン: 基本エネルギー2枚サーチ→1枚は手札、もう1枚は直接アタッチ。
@@ -226,15 +233,24 @@ _DISCARD_PROTECT: frozenset[int] = frozenset({CID_STADIUM})
 # stall用に低優先（55）で使う。サーチ系（トウコ/ラムダ/マツバ）は常時有用だが、
 # ボスの確定KOを逃してまで使う理由は無いため中間の優先度に据える。
 _SUPPORTER_IDS: frozenset[int] = frozenset({
-    CID_BOSS, CID_LILLIE, CID_MATSUBA, CID_CRISPIN, CID_LISIA, 1190, 1219, 1225,
+    CID_BOSS, CID_LILLIE, CID_MATSUBA, CID_CRISPIN, CID_LISIA, CID_XEROSIC, 1190, 1219, 1225,
 })
 _SUPPORTER_PRIORITY: dict[int, int] = {
-    1190: 15,        # ベルのまごころ（瀕死回避、緊急性が高い）
-    CID_CRISPIN: 17, # クリスピン（追加エネ加速。主砲の攻撃開始を早めるため高優先）
-    1225: 20,        # トウコ（進化ポケモン＋エネをサーチ）
-    1219: 21,        # ロケット団のラムダ（トレーナーズをサーチ）
-    1187: 22,        # マツバの確信（ドロー）
+    1190: 15,           # ベルのまごころ（瀕死回避、緊急性が高い）
+    CID_CRISPIN: 17,    # クリスピン（追加エネ加速。主砲の攻撃開始を早めるため高優先）
+    CID_XEROSIC: 19,    # クセロシキの策略（相手の手札が異常に多い時のみ、下記_should_play_xerosic参照）
+    1225: 20,           # トウコ（進化ポケモン＋エネをサーチ）
+    1219: 21,           # ロケット団のラムダ（トレーナーズをサーチ）
+    1187: 22,           # マツバの確信（ドロー）
 }
+
+# --- クセロシキの策略の使用しきい値 ---
+# 通常の対戦では相手の手札は3～6枚程度で推移する（2026-08-01リプレイ解析、
+# アラカザム(パワフルハンド)以外の相手21戦で確認）。これを超えて手札を貯め込む
+# 相手は「パワフルハンド」等の手札依存ワザの温存、またはただの牽制で、放置すると
+# 手札20枚超＝ダメカン40個(400ダメージ)超の即死級ワザに育つ。実測ではこの閾値を
+# 超えたゲームで手札14→18→23→24→25枚と加速度的に増えており、早期に刈るほど良い。
+_XEROSIC_HAND_THRESHOLD = 7
 
 # --- ポケモンをサーチするグッズ（盤面が埋まっていれば温存）---
 # ポケパッド。なかよしポフィン(1086)は2026-07-31実戦リプレイ解析で「敗北の6/17が
@@ -570,6 +586,17 @@ def _should_play_matsuba(obs: Observation) -> bool:
     return len(opp_state.bench) > 0
 
 
+def _should_play_xerosic(obs: Observation) -> bool:
+    """クセロシキの策略（相手の手札を3枚まで減らす）を使う価値があるか。
+    相手の手札が_XEROSIC_HAND_THRESHOLD枚以上に膨らんでいる時のみ使う
+    （手札依存の大型ワザ＝アラカザムのパワフルハンド等の牙を早めに折る）。"""
+    state = obs.current
+    if state is None:
+        return False
+    opp_state = state.players[1 - state.yourIndex]
+    return opp_state.handCount >= _XEROSIC_HAND_THRESHOLD
+
+
 def _boss_priority(obs: Observation) -> int | None:
     """ボスの指令の優先度（小さいほど優先、None=今ターンは使わない）。
     ベンチに実際にKO/スナイプできる的がある「確定KOの好機」は最優先（5）で
@@ -644,6 +671,8 @@ def _supporter_sort_key(card_id: int, obs: Observation) -> int:
         return _SUPPORTER_PRIORITY.get(CID_BELL, 15) if _should_play_bell(obs) else 999
     if card_id == CID_MATSUBA:
         return _SUPPORTER_PRIORITY.get(CID_MATSUBA, 22) if _should_play_matsuba(obs) else 999
+    if card_id == CID_XEROSIC:
+        return _SUPPORTER_PRIORITY.get(CID_XEROSIC, 19) if _should_play_xerosic(obs) else 999
     return _SUPPORTER_PRIORITY.get(card_id, 30)
 
 
