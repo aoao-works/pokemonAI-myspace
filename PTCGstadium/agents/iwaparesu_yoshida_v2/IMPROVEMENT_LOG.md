@@ -22,35 +22,167 @@ Rules:
 
 ### Unresolved
 
-- **Alakazam-line loss rate after the damage-counter-estimate fix**: ref `55129961`
-  (2026-07-31 run #2) added `_effect_damage_estimate()` for Powerful Hand and similar
-  attacks. Not yet validated against real post-fix replays — check whether the
-  Alakazam-involved loss rate (was 5/17 losses, 0/14 wins pre-fix) actually drops.
+- **Buddy-Buddy Poffin (1086) validation pending**: ref `55137619` (2026-07-31 run #3)
+  added 2x Buddy-Buddy Poffin (cut 1x Jumbo Ice + 1x Bell's Sincerity) to fix the
+  "never got Dwebble into play" loss pattern (see run #3 entry below). Check next run
+  whether the "0 Dwebble/Crustle ever in play" loss rate actually drops from this
+  run's 6/17 (35%), and whether cutting Jumbo Ice/Bell's Sincerity caused any new
+  "died to damage we could've healed through" losses (watch for it, small sample risk).
 - **Self-referential "damage counters already on this/opponent's Pokémon" attacks**
   (Flail, Wrathful Hearth, Powerful Rage, Damage Beat, Scarring Shout, etc.) are still
   unestimated in `_usable_damage()` (found 2026-07-31 run #2). Would need to read
   `maxHp - hp` (in 10-HP units) off the specific opposing Pokémon to estimate safely.
   Not yet confirmed to be costing real games — needs replay evidence before acting.
-- **"Never drew into the Crustle/Iwaparesu line at all" short losses** (found
-  2026-07-31 run #1): a minority (4/17 in run #2's sample) of losses never got
-  Dwebble(344)/Crustle(345) into play at all, losing on Zarude alone. Unclear if
-  this is fixable without deck-level risk (already tuned via Zarude x4 + Night
-  Stretcher) or just normal wall-deck mulligan variance — would need dedicated
-  opening-hand/mulligan statistics across more replays to tell the difference.
 - **Discard-pile-count-based damage attacks** (e.g. Re-Brew) — noted in run #2 as
   another `atk.damage == 0` pattern not yet estimated, lower priority than the
   self-referential family above (rarer in observed replays so far).
+- **Toko (1225, x3) may be partly redundant**: found in run #3 — Dwebble's own
+  "Ascension" attack already searches the deck for Crustle automatically when used
+  (no separate tutor needed), so Toko's "search 1 evolution Pokémon + 1 energy"
+  mostly only has unique value for the energy half once Dwebble is out, and is dead
+  weight (searches Crustle you can't yet play) before Dwebble is out. Did not touch
+  this run to keep the change surgical (one lever at a time) — worth reconsidering
+  once the Poffin fix's real impact is known, since freeing more slots for Poffin or
+  other basic-stage support might compound.
 
 ### Resolved
 
-*(none yet — this section was created 2026-07-31 alongside the first two runs'
-entries below, which already resolved the Zarude/Night-Stretcher resource-exhaustion
-issue, the ex-immunity-vs-"ignores defender effects" bypass, and the
-damage-counter-attack blind spot. Not backfilled here individually since they were
-tracked informally before this section existed; from now on, resolved items should
-be moved here explicitly.)*
+- **Alakazam-line loss rate after the damage-counter-estimate fix** (opened run #2,
+  2026-07-31): checked in run #3 against ref `55129961`'s real replays (34 games).
+  Alakazam line (741/742/743) appeared in 4 games this round: 1 win / 3 losses (25%
+  win rate) — up from 0 wins / 5 losses (0%) in the pre-fix sample. Sample is still
+  small (4 games) but the direction is the right one and the fix is not making things
+  worse; traced one loss (ep 89101506) and confirmed the exact -160 HP hit still
+  matches Powerful Hand's formula (8 hand cards × 2 counters × 10 HP), so the
+  estimate function itself is computing correctly — the remaining losses look like
+  "correctly identified a lethal threat but had no good escape that turn" rather than
+  a threat-detection miss. Considering resolved as "fix validated, working as
+  intended"; not going to chase this further without a bigger sample.
+- *(the original run #1/#2 items — Zarude/Night-Stretcher resource-exhaustion fix,
+  the ex-immunity-vs-"ignores defender effects" bypass, and the damage-counter-attack
+  blind spot — were resolved before this section existed and are only referenced
+  informally in the entries below.)*
 
 ---
+
+## 2026-07-31 (loop run #3, ~21:55 JST)
+
+**Orientation**: Read the backlog and run #2 entry below. That run shipped ref
+`55129961` (the `_effect_damage_estimate()` fix for Powerful Hand/damage-counter
+attacks) and left it PENDING pending a real-score/replay check.
+
+**Current standing**:
+- `55129961` came back at **549.7** (up from run #2's 518.1, still below run #1's
+  592.4/571.2 range — reconfirms the loop's own point that single scores are noisy;
+  see below for the replay-level read instead). Leaderboard (fresh CSV, 6014 teams):
+  bronze cutoff (rank 601) = **841.1**, essentially flat vs run #2's 840.9. We're
+  rank 3844, displayed score 571.2 (Kaggle shows best-ever, not latest). Submission
+  count today before this run: 2 (00:59 and 06:58 UTC) — safe to submit a 3rd.
+
+**Replay analysis of `55129961`**: downloaded all 34 public episodes
+(`kaggle competitions episodes 55129961` + `replay` per episode) and parsed final
++ full-game board state for both sides (active/bench/hand/prize, plus HP deltas on
+our active Pokémon and the opponent's roster across the whole game, not just the
+last snapshot). Wrote a reusable parser at analysis time (not checked in — one-off,
+see method notes below for anyone who wants to reproduce).
+- Record: **17-17 (50.0%)**, consistent with 549.7.
+- **Alakazam-line check (validates run #2's fix)**: moved to Resolved above — went
+  from 0/5 (0%) win rate pre-fix to 1/4 (25%) post-fix. Real improvement, not
+  complete, sample still small.
+- **New/bigger finding this run**: of the 17 losses, **6 (35%) never got
+  Dwebble(344) into play at all** (not on bench, not active, at any point in the
+  whole game — confirmed by scanning every step, not just the final snapshot).
+  This is now the single largest identifiable loss pattern this round, bigger than
+  the Alakazam-specific issue (3/17) or the classic "Crustle died then we ran dry"
+  resource-exhaustion pattern. Checked where the 4 Dwebble copies were sitting at
+  game end in these 6 losses: **0 in hand, 0 in discard, all 4 still stuck in the
+  deck** in every case. Notably, in 3 of these 6 losses, **Crustle (345) itself
+  was sitting dead in our hand** at game end — useless, since Crustle is a Stage-1
+  that can only be played by evolving an already-in-play Dwebble, and Dwebble never
+  got there.
+
+**Root cause identified**: the deck currently has **no way to specifically search
+for a Basic Pokémon** (Dwebble). Toko (1225) searches "an evolution Pokémon + an
+energy" (i.e. it can only fetch Crustle, which explains why Crustle was showing up
+in dead hands — Toko was finding it while Dwebble sat undrawn). Pokégear 3.0 (1122)
+only searches Supporters. So Dwebble access is purely a function of raw draw luck
+across an 60-card deck with only 4 copies, with no tutor at all — unusually thin
+for how central Dwebble is (it's the *only* way Crustle/Iwaparesu, our whole wall
+plan, gets into play).
+
+**Fix applied**: grepped the card DB for "Search your deck for ... Basic Pokémon"
+Items and found **Buddy-Buddy Poffin (id 1086)**: "Search your deck for up to 2
+Basic Pokémon with 70 HP or less and put them onto your Bench. Then, shuffle your
+deck." Dwebble is exactly 70 HP, and it's the *only* Pokémon in our decklist at or
+under that threshold (Zarude is 120 HP) — so this card can only ever fetch Dwebble,
+no ambiguity, and it places directly onto the Bench (not hand), which is exactly
+the deck's own designed opening sequence per the existing `_SETUP_ACTIVE_PRIORITY`
+comment (Zarude tanks active while Dwebble sits on bench getting energy, then swaps
+in to use Ascension). This is also **the "pre-wired but unused" pattern the loop
+process calls out explicitly**: `main.py` already had a `_POKEMON_SEARCH_ITEMS`
+mechanism (`_should_play_item` → `_need_basic_target` → generic bench-count gating)
+and a `_select_search_target` ranking function (via `_BRING_ORDER`, which already
+prioritizes Dwebble copies 0-4 first) — fully generic and ready to use, just wired
+to an unused placeholder `CID_POKE_PAD = 0` that never matches any real card
+(Poké Pad, the real card, is id 1152 and isn't in this deck; the `0` was always a
+"disabled" sentinel, per the project's convention e.g. `CID_ULTRA_BALL = 0`). Also
+found via `git`/code comments that Buddy-Buddy Poffin (1086) was *previously in this
+deck* and was explicitly cut to make room when Zarude was adopted (comment at
+`main.py` "なかよしポフィン(1086)はザルード採用の枠確保のためデッキから抜いた").
+So this is arguably a lapsed regression as much as a new idea.
+
+Changes:
+1. `main.py`: added `CID_POFFIN = 1086`, added it to `_POKEMON_SEARCH_ITEMS`
+   (alongside the still-inert `CID_POKE_PAD`), updated the surrounding comment.
+   No changes to `_should_play_item`, `_need_basic_target`, or `_select_search_target`
+   — all three already worked generically once the ID was registered.
+2. `deck.csv`: added 2x Buddy-Buddy Poffin (1086). To keep this a pure swap (60
+   cards, no net deck-size change), cut the 2 single-copy cards that seemed least
+   load-bearing: Jumbo Ice (1147, heal-80-if-3+-energy, narrow trigger) and Bell's
+   Sincerity (1190, full-heal-if-≤30HP panic button, already partially redundant
+   with Night Stretcher's KO recursion). Deliberately did **not** touch the
+   3x-Toko/energy counts/other slots — see new backlog item above about Toko's
+   partial redundancy with Dwebble's own Ascension search, left for a future run to
+   avoid stacking two untested deck changes at once.
+
+**Testing**:
+- `sort -n deck.csv | uniq -c`: 60 lines total, max 4 copies of any ID, 1159 (ACE
+  SPEC) still at 1. Confirmed 1086 now present at 2 copies, 1147/1190 both at 0.
+- Verified `submission/main.py` loads standalone and `read_deck_csv()` parses 60
+  cards including id 1086 present.
+- Smoke test: `arena.py --p0 agents/iwaparesu_yoshida_v2 --p1 agents/archive/baseline
+  --games 40` → 50.0% win rate, **errors: 0**. Pure crash-check per the loop's own
+  rules; baseline is a different deck so this doesn't specifically exercise the new
+  Poffin logic, it just confirms nothing broke.
+- Synced `main.py`/`deck.csv` into `submission/` (cg/ SDK unchanged).
+- Submitted: ref **`55137619`**, 2026-07-31 12:55 UTC, PENDING at time of writing.
+  **Check its score/replays next run — specifically the "0 Dwebble ever in play"
+  loss-rate, which should drop meaningfully from this run's 6/17 (35%) if the fix
+  is working.**
+
+**Method note for future runs**: episode/replay JSON parsing needs the *Windows*
+path (e.g. `C:\Users\...\Temp\...`), not the Git-Bash `/tmp/...` path, when passed
+inside an inline `python -c "..."` string — `/c/venv/Scripts/python.exe` is a native
+Windows binary and MSYS/Git-Bash only rewrites POSIX paths that appear as literal
+CLI *arguments*, not paths embedded inside a quoted script body. Use `cygpath -w
+/tmp/foo` to get the real path, or pass the path as `sys.argv[1]` (an actual CLI
+arg) instead of hardcoding `/tmp/...` inside the script text. Cost some time this
+run via silent `glob()` matches returning zero results with no error.
+
+**For the next run**:
+1. First check ref `55137619`'s score and replays. Key metric: did the "Dwebble
+   never got into play" loss share actually drop from 6/17 (35%)? If yes, the fix
+   is validated — consider bumping Poffin to 3-4 copies (standard competitive count)
+   if slots can be found. If the pattern didn't move, check whether Poffin is
+   actually being played early (verify via replay: does Poffin show up in the
+   discard pile by turn 2-3 in games where Dwebble ends up on the bench?) before
+   concluding the fix failed — could also be a play-priority issue rather than a
+   deck-list issue.
+2. Watch for any new "died to unhealed damage" pattern that might be attributable to
+   cutting Jumbo Ice/Bell's Sincerity — small risk, flagged in backlog, not expected
+   to be large given both were single copies with narrow triggers.
+3. The Toko-redundancy observation (new backlog item) is worth a dedicated look once
+   Poffin's impact is confirmed — don't stack it in without evidence first.
 
 ## 2026-07-31 (loop run #2, ~15:00 JST)
 
