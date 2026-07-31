@@ -345,6 +345,16 @@ def _bring_rank(cid: int, owned: int) -> int | None:
         return None
 
 
+def _ignores_defender_effects(atk) -> bool:
+    """このワザが「このワザのダメージは、相手のバトルポケモンにかかっている効果を
+    計算しない」系（英語テキストでは "any effects on your opponent's Active Pokémon"）か。
+    イワパレスの特性（しんぴのいしやど＝ex無効）などの守備側の効果を無視して貫通する
+    対壁テック。実測でメガミミロップexの「スパイクホッパー」がこれで170→10までイワパレス
+    にダメージを通してきた（2026-07-31 リプレイ解析）。all_attack() は英語名なので、
+    照合はこの英語マーカー文字列で行う（プロジェクト規約: カードID/英語照合、日本語非依存）。"""
+    return atk is not None and "any effects on your opponent" in (atk.text or "")
+
+
 def _usable_damage(poke, card_cache: dict, attack_cache: dict, defender=None) -> int:
     """今の付与エネルギーで実際に撃てる技の最大ダメージ（弱点×2込み、免除ポケ除く）。"""
     if poke is None:
@@ -353,10 +363,11 @@ def _usable_damage(poke, card_cache: dict, attack_cache: dict, defender=None) ->
     if cd is None:
         return 0
     # 守備側がex無効特性（しんぴのいしやど等）を持ち、攻撃側がexなら
-    # ワザのダメージは通らない ＝ 打点0扱い。壁デッキの中核ロジック。
-    if (defender is not None and defender.id in _EX_IMMUNE_POKEMON
-            and _is_ex_pokemon(poke, card_cache)):
-        return 0
+    # 原則ワザのダメージは通らない＝打点0扱い（壁デッキの中核ロジック）。
+    # ただし「相手のバトルポケモンにかかっている効果を計算しない」ワザ（グレートシザー、
+    # スパイクホッパー等）はこの免除効果自体を無視して貫通するため、ワザ単位の例外にする。
+    ex_immune = (defender is not None and defender.id in _EX_IMMUNE_POKEMON
+                 and _is_ex_pokemon(poke, card_cache))
     dcd = card_cache.get(defender.id) if defender is not None else None
     weak = (
         dcd is not None and dcd.weakness is not None and dcd.weakness == cd.energyType
@@ -367,6 +378,8 @@ def _usable_damage(poke, card_cache: dict, attack_cache: dict, defender=None) ->
     for aid in cd.attacks:
         atk = attack_cache.get(aid)
         if atk is None or len(atk.energies) > avail:
+            continue
+        if ex_immune and not _ignores_defender_effects(atk):
             continue
         dmg = atk.damage
         if dmg > 0 and weak:
