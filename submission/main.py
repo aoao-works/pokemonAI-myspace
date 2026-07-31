@@ -1,4 +1,5 @@
 import os
+import re
 
 from cg.api import (
     Observation, SelectType, SelectContext, OptionType, AreaType, CardType,
@@ -355,7 +356,33 @@ def _ignores_defender_effects(atk) -> bool:
     return atk is not None and "any effects on your opponent" in (atk.text or "")
 
 
-def _usable_damage(poke, card_cache: dict, attack_cache: dict, defender=None) -> int:
+_DMG_COUNTER_UNTIL_RE = re.compile(r"until its remaining hp is (\d+)", re.IGNORECASE)
+_DMG_COUNTER_FIXED_RE = re.compile(r"(?:place|put)\s+(\d+)\s+damage counters?\b", re.IGNORECASE)
+_DMG_COUNTER_PER_HAND_RE = re.compile(r"for each card in your hand", re.IGNORECASE)
+
+
+def _effect_damage_estimate(atk, attacker_hand_count: int, defender_hp: int) -> int:
+    """カードDBの damage=0 でも実際はダメージカウンターを乗せて実質ダメージを与える
+    ワザ（例: アラカザムの「パワフルハンド」＝手札1枚につきダメカン2個＝実測-400）の
+    概算ダメージ。_usable_damage の脅威評価が「damage=0＝無害」と誤認し、壁ポケモンを
+    退避させずOHKOされた実例（2026-07-31 リプレイ解析, ep 89057424）への対処。
+    複雑な効果（自分の場のダメカン数に依存等）は無理に推定せず0のまま扱う。"""
+    if atk is None or not atk.text or "damage counter" not in atk.text.lower():
+        return 0
+    m_until = _DMG_COUNTER_UNTIL_RE.search(atk.text)
+    if m_until:
+        return max(0, defender_hp - int(m_until.group(1)))
+    m_fixed = _DMG_COUNTER_FIXED_RE.search(atk.text)
+    if m_fixed:
+        n = int(m_fixed.group(1))
+        if _DMG_COUNTER_PER_HAND_RE.search(atk.text):
+            n *= max(attacker_hand_count, 0)
+        return n * 10
+    return 0
+
+
+def _usable_damage(poke, card_cache: dict, attack_cache: dict, defender=None,
+                    attacker_hand_count: int = 0) -> int:
     """今の付与エネルギーで実際に撃てる技の最大ダメージ（弱点×2込み、免除ポケ除く）。"""
     if poke is None:
         return 0
@@ -384,6 +411,11 @@ def _usable_damage(poke, card_cache: dict, attack_cache: dict, defender=None) ->
         dmg = atk.damage
         if dmg > 0 and weak:
             dmg *= 2
+        if dmg == 0:
+            # ダメカン設置系（damage=0だが実質ダメージあり）の見積り。
+            # 弱点適用対象外（実際のカード効果はダメージ計算を経由しないため）。
+            dmg = _effect_damage_estimate(
+                atk, attacker_hand_count, defender.hp if defender is not None else 0)
         if dmg > best:
             best = dmg
     return best
@@ -402,8 +434,10 @@ def _evaluate(state, your_idx: int, active_override=None) -> float:
         your_state.active[0] if your_state.active else None)
     opp_active = opp_state.active[0] if opp_state.active else None
 
-    my_dmg  = _usable_damage(active, card_cache, attack_cache, defender=opp_active)
-    opp_dmg = _usable_damage(opp_active, card_cache, attack_cache, defender=active)
+    my_dmg  = _usable_damage(active, card_cache, attack_cache, defender=opp_active,
+                              attacker_hand_count=your_state.handCount)
+    opp_dmg = _usable_damage(opp_active, card_cache, attack_cache, defender=active,
+                              attacker_hand_count=opp_state.handCount)
     my_hp   = active.hp if active is not None else 0
     opp_hp  = opp_active.hp if opp_active is not None else 0
 
@@ -427,7 +461,8 @@ def _evaluate(state, your_idx: int, active_override=None) -> float:
 
     opp_bench_threat = 0
     for p in opp_state.bench:
-        d = _usable_damage(p, card_cache, attack_cache, defender=active)
+        d = _usable_damage(p, card_cache, attack_cache, defender=active,
+                            attacker_hand_count=opp_state.handCount)
         if d > opp_bench_threat:
             opp_bench_threat = d
     opp_bench_threat_n = min(opp_bench_threat, 300) / 300.0
