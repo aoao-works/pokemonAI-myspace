@@ -4,6 +4,54 @@ Autonomous loop entries go here, newest first. See the loop routine prompt / pro
 
 ---
 
+## Open Items (backlog)
+
+**Read this section first, every run. Update it last, every run** — before appending
+your dated entry below. This exists because the chronological log entries grow long
+and a "worth revisiting later" note buried in an old entry is easy to miss; this
+section is the single place that always reflects current unresolved business.
+
+Rules:
+- When you find something worth fixing but don't tackle it this run, add it here
+  (one bullet, with enough context to act on later, and which run/date found it).
+- When you resolve something (or determine it's not actually worth fixing), move
+  its bullet to **Resolved** with the run/date and commit/submission ref that
+  addressed it. Don't just delete it — the history has value.
+- If you're about to submit a fix for something in this list, note in your dated
+  entry which backlog item(s) it addresses.
+
+### Unresolved
+
+- **Alakazam-line loss rate after the damage-counter-estimate fix**: ref `55129961`
+  (2026-07-31 run #2) added `_effect_damage_estimate()` for Powerful Hand and similar
+  attacks. Not yet validated against real post-fix replays — check whether the
+  Alakazam-involved loss rate (was 5/17 losses, 0/14 wins pre-fix) actually drops.
+- **Self-referential "damage counters already on this/opponent's Pokémon" attacks**
+  (Flail, Wrathful Hearth, Powerful Rage, Damage Beat, Scarring Shout, etc.) are still
+  unestimated in `_usable_damage()` (found 2026-07-31 run #2). Would need to read
+  `maxHp - hp` (in 10-HP units) off the specific opposing Pokémon to estimate safely.
+  Not yet confirmed to be costing real games — needs replay evidence before acting.
+- **"Never drew into the Crustle/Iwaparesu line at all" short losses** (found
+  2026-07-31 run #1): a minority (4/17 in run #2's sample) of losses never got
+  Dwebble(344)/Crustle(345) into play at all, losing on Zarude alone. Unclear if
+  this is fixable without deck-level risk (already tuned via Zarude x4 + Night
+  Stretcher) or just normal wall-deck mulligan variance — would need dedicated
+  opening-hand/mulligan statistics across more replays to tell the difference.
+- **Discard-pile-count-based damage attacks** (e.g. Re-Brew) — noted in run #2 as
+  another `atk.damage == 0` pattern not yet estimated, lower priority than the
+  self-referential family above (rarer in observed replays so far).
+
+### Resolved
+
+*(none yet — this section was created 2026-07-31 alongside the first two runs'
+entries below, which already resolved the Zarude/Night-Stretcher resource-exhaustion
+issue, the ex-immunity-vs-"ignores defender effects" bypass, and the
+damage-counter-attack blind spot. Not backfilled here individually since they were
+tracked informally before this section existed; from now on, resolved items should
+be moved here explicitly.)*
+
+---
+
 ## 2026-07-31 (loop run #2, ~15:00 JST)
 
 **Orientation**: Read the 2026-07-31 run #1 entry below. That run shipped ref `55123159` (the `_ignores_defender_effects` ex-immunity fix) and left it PENDING with instructions to check its real score/replays first before drawing conclusions.
