@@ -22,18 +22,36 @@ Rules:
 
 ### Unresolved
 
-- **Xerosic's Machinations (1197) validation pending**: ref `55148965` (2026-08-01
-  run #4) added 2x Xerosic's Machinations (caps opponent's hand at 3 cards, only
-  played via `_should_play_xerosic()` when opponent's handCount >= 7) to counter the
-  "Alakazam Powerful Hand hand-hoarding" loss pattern found this run (see dated entry
-  below — 6/23 losses featured the Abra/Kadabra/Alakazam line, only 1 win, and two
-  separate games saw a single Powerful Hand hit for 480/500 damage one-shotting a
-  full-HP Pokémon with no positional counter available). Check next run: (a) does the
-  Alakazam-line win rate improve from this run's 1/7 (14%)? (b) is Xerosic actually
-  firing in those games (check replay logs for attackId/cardId 1197 usage — if the
-  opponent's hand never got read as >=7 before the kill shot, the threshold may need
-  lowering); (c) any sign the trim to Toko/Morty's Conviction (below) cost us
-  something (e.g. more "never found Crustle" or "ran out of draw" losses).
+- **Xerosic's Machinations (1197) — bumped 2→3 copies, re-check next run**: ref
+  `55151278` (2026-08-01 run #5) bumped Xerosic from 2 to 3 copies after confirming
+  (see dated entry below) that 2 copies fire correctly but run out mid-game — in the
+  clearest traced example (ep `89233850`), the opponent's hand was reset to 3 exactly
+  once (step 14) then climbed unchecked from 6→18 over the rest of a 91-step game
+  with no second reset available. Check next run: (a) does the Alakazam-line win rate
+  improve from this run's 2/7 (28.6%)? (b) does the opponent's hand get reset a 2nd
+  time in long (>80-step) games now, or does draw variance mean we still often only
+  see 1 copy? If still insufficient, consider bumping to 4 (would need another 1-slot
+  cut) rather than adjusting `_XEROSIC_HAND_THRESHOLD` (7 was confirmed *not* the
+  bottleneck this run — Xerosic fired correctly in 5/6 relevant games, the problem is
+  running out of ammo, not late triggering).
+- **"Single Pokémon the whole game" sudden-death losses — new pattern, not yet
+  acted on** (found 2026-08-01 run #5): in the `55148965` replay batch (26 games),
+  4/14 losses (29%) — eps `89229735`, `89231817`, `89232839`, `89238059` — never had
+  a 2nd Pokémon on the bench at *any point in the entire game* (not "ran dry after a
+  long fight" — literally 0 bench presence from turn 1 to game end). All 4 were short
+  games (23-45 steps) that ended the instant our lone active died, with no KOs having
+  been scored by either side up to that point (prize counts still 6-6 at the point
+  the pattern was checked). Traced two turn-by-turn: both showed the actual opening
+  hand had only 1 Basic Pokémon (Zarude or Dwebble) and no Poffin/Toko drawn by the
+  time the lone active died. This looks like real, structural mulligan/opening-hand
+  variance (only 8 Basics — 4x Dwebble + 4x Zarude — in a 60-card deck) rather than a
+  code bug. Didn't act on this yet to avoid stacking two untested deck changes in one
+  run (the Xerosic bump above is this run's one change) — but if the Xerosic bump
+  doesn't pan out, or if this pattern recurs at a similar rate next batch, the
+  straightforward next lever is bumping Buddy-Buddy Poffin (currently 2 copies) to
+  raise the odds of drawing a 2nd-body fetch effect before the opener dies, per run
+  #3's original forward note ("consider bumping Poffin to 3-4 copies... if slots can
+  be found").
 - **Self-referential "damage counters already on this/opponent's Pokémon" attacks**
   (Flail, Wrathful Hearth, Powerful Rage, Damage Beat, Scarring Shout, etc.) are still
   unestimated in `_usable_damage()` (found 2026-07-31 run #2). Would need to read
@@ -45,6 +63,13 @@ Rules:
 
 ### Resolved
 
+- **Toko/Morty's Conviction trim (run #4) — no regression found**: checked run #5
+  (2026-08-01) against `55148965`'s replays. Only 2/14 losses (14%) never saw the
+  Dwebble/Crustle line in play at all — same order of magnitude as run #4's own 1/23
+  (4%) post-Poffin-fix baseline, not a meaningful jump. No evidence the Toko 2-copy /
+  Morty's-Conviction-1-copy trim from run #4 hurt draw consistency. (Morty's
+  Conviction has since been cut to 0 entirely this run — see dated entry — to fund
+  the Xerosic bump above; this finding is part of why that felt safe to do.)
 - **Buddy-Buddy Poffin (1086) validated**: checked run #4 (2026-08-01) against ref
   `55137619`'s real replays (37 games). The "Dwebble/Crustle line never got into
   play" loss share dropped to **1/23 (4%)**, down hard from run #3's pre-fix 6/17
@@ -76,6 +101,129 @@ Rules:
   the ex-immunity-vs-"ignores defender effects" bypass, and the damage-counter-attack
   blind spot — were resolved before this section existed and are only referenced
   informally in the entries below.)*
+
+---
+
+## 2026-08-01 (loop run #5, ~10:15-11:00 JST)
+
+**Orientation**: Read the backlog first. Top item was validating run #4's Xerosic's
+Machinations fix against ref `55148965`'s real replays — exactly the task this run
+did.
+
+**Current standing**:
+- `55148965` (run #4's Xerosic fix) came back at **616.1** at time of first check
+  (best score since 592.4 on 2026-07-30), though it had already revised down to
+  602.5 by the time this run finished (Kaggle keeps revising scores as more games
+  play out — consistent with prior runs' observation, not a new phenomenon).
+  Leaderboard (fresh CSV, 6059 teams): bronze cutoff (top 10%, rank 605) = **837.5**,
+  essentially flat vs run #4's 837.4. We're rank **3313** (best-ever score 616.1),
+  up from run #4's rank 3864 — real, if modest, progress. Submissions today
+  (08-01) before this run: 0 — safe to submit.
+
+**Replay analysis of `55148965`** (all 26 public episodes, full active/bench/hand/
+prize/handCount trace across every step for both perspectives, same methodology as
+prior runs — reused/extended the analysis script rather than rewriting from scratch).
+- Record: **12-14 (46.2%)**, roughly consistent with 616.1/602.5 (mid-pack for this
+  competition's very noisy scoring).
+- **Backlog item (a) — Alakazam-line win rate**: 7 games featured the Abra/Kadabra/
+  Alakazam line this round, **2 wins (28.6%)** — up from run #4's 1/7 (14%), so
+  moving in the right direction but still our worst matchup by a wide margin.
+- **Backlog item (b) — is Xerosic actually firing?** Yes: played in **19/26 games**
+  overall, and in **5 of the 6** Alakazam-line games where it had a chance to matter
+  (only exception was a very short 45-step loss, ep `89231817`, where we likely never
+  drew it — see the new "single Pokémon" finding below, same episode). So the
+  `_XEROSIC_HAND_THRESHOLD = 7` firing condition itself is **not** the bottleneck —
+  it correctly identifies hoarding and fires. The real problem, found by tracing
+  opponent handCount across full games: in ep `89233850` (a 91-step Alakazam loss),
+  opponent hand dropped to exactly 3 once at step 14 (our one Xerosic use that game)
+  then climbed *unchecked* 6→16→18 over the remaining ~80 steps with **no second
+  reset** — we only had 2 copies and evidently only drew/played one of them. So
+  Xerosic works as designed but we run out of ammo in long grindy games, which are
+  exactly the games where hand-hoarding has time to become lethal. **Fix**: bumped
+  Xerosic's Machinations from 2→3 copies (see below).
+- **Backlog item (c) — did the run #4 Toko/Morty's-Conviction trim cost us
+  anything?** No evidence of regression: only 2/14 losses (14%) this round never saw
+  the Dwebble/Crustle line in play at all, the same order of magnitude as run #4's
+  post-Poffin-fix 1/23 (4%). Moved to Resolved in the backlog.
+- **New finding this run — "single Pokémon the whole game" sudden-death losses**:
+  tallied max bench size reached *at any point in the entire game* (not just at the
+  end) for all 14 losses. **4/14 (29%)** — eps `89229735` (28 steps), `89231817`
+  (45 steps), `89232839` (23 steps), `89238059` (45 steps) — never had a 2nd Pokémon
+  on the bench at any point, ever, and the game ended the instant the lone active
+  died, with **zero prizes taken by either side** up to that point in 3 of the 4
+  (confirmed via the `prize` array length, which — reconfirming a prior run's method
+  note — only exposes remaining-count, not contents, for either side). Traced two
+  turn-by-turn (`89229735`, `89232839`) using the engine's own visible-hand field
+  (our own hand contents *are* exposed in our perspective's `current.players[our_idx]
+  .hand`, unlike the opponent's, which is count-only) — both had genuinely bad
+  opening hands: exactly 1 Basic Pokémon (Zarude in one, Dwebble in the other) and no
+  Poffin/Toko drawn before that lone body died. This looks like real deck-consistency
+  variance (only 8 Basics total — 4x Dwebble + 4x Zarude — in 60 cards) rather than a
+  play-logic bug; **did not act on it this run** to avoid stacking two untested deck
+  changes at once (see backlog — flagged as the natural next lever, likely another
+  Poffin bump, if the Xerosic change doesn't move the needle enough next run).
+
+**Fix applied** (`PTCGstadium/agents/iwaparesu_yoshida_v2/deck.csv` +
+one-line comment in `main.py`): bumped **Xerosic's Machinations (1197) from 2→3
+copies**, funded by cutting the last copy of **Morty's Conviction (1187, 1→0)** —
+a pure 1-for-1 swap, no other deck changes. Morty's Conviction was already trimmed
+once (2→1) in run #4 for the same reason (judged least load-bearing of the
+Boss/Lillie/Petrel-Factory-adjacent supporter set) and cutting its last copy follows
+the same reasoning, now backed by this run's confirmation (item c above) that the
+run #4 trim didn't cost us anything. No code-logic changes were needed — `CID_MATSUBA`
+stays defined in `main.py` (same "inert sentinel" pattern as `CID_POKE_PAD = 0`
+elsewhere) since deck composition is fully data-driven from `deck.csv`; added a short
+comment at its definition so a future run doesn't mistake it for still being live.
+Deliberately did **not** touch `_XEROSIC_HAND_THRESHOLD` (confirmed not the
+bottleneck this run, see item b) or the newly-found "single Pokémon" pattern (see
+above — parking for next run to avoid bundling two speculative changes).
+
+**Testing**:
+- `sort -n deck.csv | uniq -c`: 60 lines, confirmed 1197 at 3 copies, 1187 at 0
+  (absent from output entirely), ACE SPEC 1159 still at 1, no other counts changed.
+- `python -c "import ast; ast.parse(...)"` on `main.py`: syntax OK.
+- Smoke test: `arena.py --p0 agents/iwaparesu_yoshida_v2 --p1 agents/archive/baseline
+  --games 40` → **62.5% win rate, errors: 0**. Per this loop's own rules this is a
+  crash-check only (baseline doesn't run Alakazam), but note in passing: this is
+  notably higher than recent smoke-test baselines (47.5-55.0% in runs #2-#4) —
+  plausibly just game-to-game arena variance rather than a signal about this change,
+  since baseline can't exercise Xerosic either way.
+- Verified `submission/main.py` imports standalone (`import main; main.agent`
+  callable, `main.read_deck_csv()` returns 60 cards) after syncing `main.py`/
+  `deck.csv` into `submission/` (`cg/` already in sync, `diff -rq` showed no
+  differences outside `__pycache__`).
+- Submitted: ref **`55151278`**, 2026-08-01 ~01:50 UTC, PENDING at time of writing.
+  **Check its score/replays next run — see the two updated Open Items above for
+  exactly what to look for (Xerosic 2nd-reset behavior, and whether the "single
+  Pokémon" pattern recurs at a similar ~29% rate).**
+
+**Method notes for future runs**:
+- Our own hand *contents* (not opponent's) are visible in replay JSON at
+  `current.players[our_idx].hand` (list of `{id, ...}` dicts) — useful for
+  diagnosing "what did we actually have available" in a specific loss, distinct from
+  the opponent's `handCount`-only visibility. Didn't see this used explicitly in
+  prior entries' method notes, worth keeping in mind.
+- To check "did X ever happen at any point in the game" (e.g. "was there ever a 2nd
+  bench Pokémon") reliably, scan **both** `step[our_idx]` and `step[opp_idx]`
+  entries' `observation.current` per step, not just one perspective — some steps
+  only carry a populated `current` snapshot under one agent's entry (the other's may
+  be `None`, presumably logged only when that agent was actually queried for a
+  decision that step).
+
+**For the next run**:
+1. First check ref `55151278`'s score and replays. Key checks: (a) Alakazam-line win
+   rate — did it improve from this run's 2/7 (28.6%)? (b) does the opponent's hand
+   actually get reset a 2nd time in long games now (trace handCount trajectory in a
+   long Alakazam-line game like this run did for `89233850`), or are we still only
+   drawing 1 of the 3 copies in practice? If still insufficient, next lever is
+   probably 3→4 copies rather than touching the threshold (see backlog reasoning).
+2. The new "single Pokémon the whole game" pattern (4/14 losses, 29%) is unacted-on
+   and flagged in the backlog — if it recurs at a similar rate, or if the Xerosic
+   bump doesn't move the Alakazam matchup enough, consider bumping Buddy-Buddy Poffin
+   (currently 2 copies) next, per run #3's original forward-looking note.
+3. The self-referential damage-counter-attack family and discard-pile-count attacks
+   (both still in the backlog, untouched for 3 runs now) remain unaddressed and still
+   have no confirmed real-game cost — still lowest priority.
 
 ---
 
