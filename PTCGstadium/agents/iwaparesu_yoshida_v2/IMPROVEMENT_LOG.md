@@ -49,9 +49,62 @@ Rules:
 - **Discard-pile-count-based damage attacks** (e.g. Re-Brew) — noted in run #2 as
   another `atk.damage == 0` pattern not yet estimated, lower priority than the
   self-referential family above (rarer in observed replays so far).
+- **"No active Pokémon" (engine reason=3) losses remain the single largest loss
+  bucket even after the Poffin 3-copy fix — but traced to already-known,
+  structurally-hard-to-fix causes, not a new bug (run #7, 2026-08-01)**: in ref
+  `55157226`'s 16 losses, engine-reported end reason was 3 ("no active Pokémon")
+  in **8/16 (50%)**, vs reason=1 (opponent took all 6 prizes normally, 6/16) and
+  reason=2 (we decked out, 2/16 — see below). Of those 8, only 3 are the narrow
+  "never had a 2nd Pokémon in play at all" pattern the Poffin fix targeted (down
+  hard from run #6's 6/19 — the fix is working, see Resolved below); the other
+  5/8 built a real board (max concurrent Pokémon in play 2-6) but still got wiped
+  out by the end. Traced 4 of those 5 individually: 2 were Fire-type one-shots
+  (`Ethan's Typhlosion` decks, eps `89302769`/`89304327` — already-known,
+  accepted weakness, immunity ability doesn't cover weakness damage); 1 was
+  `Iono's Bellibolt ex`'s pre-evolution **`Iono's Voltorb`** (non-ex, so our
+  ex-immunity correctly does NOT apply) using an apparent self-destruct-style
+  attack for **-380 damage** (with -20 recoil to itself) that one-shots Crustle
+  regardless of HP total (ep `89325603`) — not fixable by copy-count tuning; 1
+  was `Marnie's Grimmsnarl ex` OHKOing our **Zarude** (a non-wall attacker with no
+  ex-immunity ability at all — only the Crustle/Iwaparesu line has the ability)
+  for -180 (ep `89289658`) — expected behavior, not a bug. The 5th (ep
+  `89302139`, Applin/Dipplin/Seaking toolbox) died to a high-damage non-ex
+  attacker (`Seaking`, id 93, -100 dmg) in the same "ordinary attrition" pattern
+  CLAUDE.md already documents as the deck's known core weakness. **Conclusion:
+  no new fixable lever found this run** — the remaining reason=3 losses trace to
+  things this deck was already known to be weak to (Fire weakness, non-wall
+  Pokémon lacking the immunity ability, big non-ex hits) rather than an
+  addressable bug or an undertuned card count. Further gains here would likely
+  need a structural change (e.g. more redundancy getting Crustle/Iwaparesu itself
+  back into play after a KO, since it's the only thing the ability actually
+  protects) rather than another deck.csv count tweak — not attempted this run,
+  no strong enough evidence for a specific structural change yet.
+- **Deck-out dynamics — informational, not actionable (run #7, 2026-08-01)**: of
+  ref `55157226`'s 19 wins, **14 (73.7%) came from the opponent decking out**
+  (engine reason=2), confirming the wall/stall strategy's designed win condition
+  is working as intended in practice, not just in theory. We ourselves decked out
+  in only 2/16 losses (12.5%), and both of those were long grindy games where we
+  were actually *ahead* on prizes (5-1 and a 6-6 mirror-ish game) when our own
+  deck ran dry — i.e. decking out is already working in our favor far more than
+  against us, so it's not a lever worth pulling in either direction right now.
 
 ### Resolved
 
+- **Buddy-Buddy Poffin 2→3 bump (run #6) — validated, fix confirmed working
+  (run #7, 2026-08-01)**: checked ref `55157226`'s replays (35 games) against
+  run #6's own "check next run" question — did the "never had a 2nd bench
+  Pokémon" loss share drop from 31.6%? **Yes, sharply**: using the same strict
+  definition (max concurrent Pokémon in play across the whole game < 2), it's
+  now **3/16 losses (18.8%)**, down from run #6's re-check of 6/19 (31.6%) and
+  run #5's 4/14 (29%) — a clean, large improvement in the right direction with
+  no offsetting new pattern found from the Toko 2→1 trim (no "Toko stuck useless
+  in hand" cases observed this batch). Score itself came back lower (555.5 vs
+  576.7) but per this project's noise-tolerance rule that's not the signal — the
+  targeted loss-pattern rate is, and it moved decisively. Considering this fix
+  fully validated; no further action needed here. (The broader "no active
+  Pokémon" loss bucket is still the largest one overall, 50% of losses, but the
+  other 5/8 in it are different, already-understood causes — see new Unresolved
+  item above, not a Poffin-related residual.)
 - **"Single Pokémon the whole game" sudden-death losses — acted on (run #6,
   2026-08-01)**: this pattern (opened run #5) recurred at almost the same rate in
   ref `55151278`'s replays — 6/19 losses (31.6%) vs run #5's 4/14 (29%), confirming
@@ -110,6 +163,102 @@ Rules:
   the ex-immunity-vs-"ignores defender effects" bypass, and the damage-counter-attack
   blind spot — were resolved before this section existed and are only referenced
   informally in the entries below.)*
+
+---
+
+## 2026-08-01 (loop run #7, ~22:35-23:15 JST)
+
+**Orientation**: Read the backlog first. Top item was run #6's own "check next
+run" question — did ref `55157226`'s (Poffin 2→3, Toko 2→1) score/replays show
+the "never had a 2nd bench Pokémon" loss rate actually drop from 31.6%?
+
+**Current standing**:
+- `55157226` (run #6's Poffin fix) is COMPLETE at **555.5**. `55151278` (run #5's
+  Xerosic fix) is still our best-ever at **576.7**. Leaderboard (fresh CSV, 6094
+  teams): bronze cutoff (top 10%, rank 609) = **835.3**, essentially flat vs run
+  #6's 836.5. We're rank **3826** (best-ever score 576.7). Submissions today
+  (08-01) before this run: 2 (`55151278` 01:50 UTC, `55157226` 07:51 UTC).
+
+**Replay analysis of `55157226`** (all 35 public episodes, full active/bench/
+hand/prize trace per step for both perspectives, same methodology as prior
+runs, extended this round to also parse the engine's own `Result` log event —
+`{reason, result}` — which directly states *why* each game ended: 1 = normal
+prize win, 2 = a player started their turn with 0 deck cards (deck-out), 3 = no
+Pokémon in Active Spot, 4 = a card effect. This is a more precise ground truth
+than inferring cause from board-state snapshots alone and is worth reusing in
+future runs).
+- Record: **19-16 (54.3%)**.
+- **Backlog question — did the Poffin fix work?** Yes. Losses with max
+  concurrent Pokémon in play < 2 (the strict "never had a 2nd Pokémon" test):
+  **3/16 (18.8%)**, down from run #6's 6/19 (31.6%). Moved to Resolved in the
+  backlog above — considering this fix fully validated, no further action.
+- **New finding — the broader "no active Pokémon" (engine reason=3) bucket is
+  still 50% of losses (8/16), but the other 5/8 (beyond the 3 the Poffin fix
+  targets) are different, already-understood causes, not a new bug**: traced 4
+  of the 5 individually — 2 Fire-type one-shots (`Ethan's Typhlosion`, already
+  documented weakness), 1 `Iono's Voltorb` (non-ex) self-destruct-style attack
+  for -380 dmg that one-shots Crustle at any HP (immunity correctly doesn't
+  apply since it's non-ex — nothing to fix), 1 `Marnie's Grimmsnarl ex` OHKOing
+  our **Zarude** for -180 (expected — only the Crustle/Iwaparesu line has the
+  ex-immunity ability, Zarude never had protection to begin with). The 5th (vs
+  an Applin/Dipplin/Seaking toolbox) died to a high-damage non-ex attacker
+  (`Seaking`) in the same "ordinary non-ex attrition" pattern CLAUDE.md already
+  documents as the deck's known core weakness. Full detail in the new Unresolved
+  backlog item above. **No code/deck change made this run** — didn't find
+  evidence for a specific, safe, well-reasoned fix; per this loop's own rules I'd
+  rather skip a change than ship a speculative one.
+- **Side finding — deck-out dynamics, informational only**: 14/19 wins (73.7%)
+  this round came from the *opponent* decking out, confirming the wall/stall
+  win condition works as designed in practice. We ourselves decked out in only
+  2/16 losses (12.5%), and traced both (`89299449`, `89303241`) — both were
+  long grindy games where we were actually ahead or even on prizes (5-1, 6-6)
+  when our own deck ran dry. Not a lever worth pulling either direction; logged
+  for future reference only. Full detail in backlog above.
+- Alakazam-line matchup: only 1 game featured it this round (down from 4 last
+  run), 0 wins — too small a sample to update the existing backlog note
+  meaningfully; leaving as-is (still "Do NOT bump Xerosic without new
+  evidence").
+
+**No fix applied, no submission this run**: no new well-evidenced, safe change
+emerged from this round's analysis (see above) — the loop's rules explicitly
+say not to submit a speculative change or burn a submission slot without real
+evidence, so today's submission count stays at 2. `main.py`/`deck.csv` are
+unchanged from `55157226` (already the current `submission/` state).
+
+**Method note for future runs**: parsing the engine's own `Result` log entry
+(`{reason, result, type: 'Result'}`, found by scanning every step's `logs` for
+`type == 'Result'`) gives an authoritative end-of-game cause instead of
+inferring it from board snapshots — much more reliable for bucketing losses
+(prize win vs deck-out vs no-active-Pokémon vs card-effect). Worth using this
+as the primary loss classifier going forward rather than re-deriving it from
+`active`/`bench` state each time.
+
+**Also note (environment, not a code issue)**: hit an MSYS/Git-Bash path
+translation gotcha this run — `/tmp/...`-style paths only auto-translate to the
+real Windows temp folder when passed as a Bash **command-line argument** to a
+native Windows binary (e.g. `python.exe /tmp/script.py /tmp/some_dir`); a
+`/tmp/...` path **hardcoded inside** a Python string (or written via the Write
+tool) resolves to `C:\tmp\...` instead (root of the current drive), a different,
+silently-existing location with old leftover files from earlier runs. Caused a
+few minutes of confusion this run (looked like a stale/conflicting concurrent
+process at first). Always pass scratch-file paths as argv, not as literals
+embedded in a script, when using `/tmp` from this environment.
+
+**For the next run**:
+1. First check whether a fresh submission's replays are available to analyze
+   (none was made this run, so `55157226` is still the latest — check
+   `kaggle competitions submissions` for anything newer before assuming stale).
+2. The "no active Pokémon" bucket (backlog, new item above) is the biggest
+   remaining loss driver (50%) but every traced case this run pointed to
+   already-known structural weaknesses (Fire weakness, ex-immunity only
+   covering Crustle/Iwaparesu, big non-ex hits) rather than a tunable bug. If a
+   genuinely new angle is needed, consider whether more redundancy specifically
+   getting a 2nd/3rd Crustle back into play after a KO (the only thing the
+   ability protects) is worth exploring — not attempted yet, no evidence
+   gathered on how often we have a 2nd Crustle/Iwaparesu available after the
+   first one dies.
+3. Alakazam-line matchup and the self-referential/discard-count damage-attack
+   families remain open, still low-priority/low-sample — see backlog.
 
 ---
 
