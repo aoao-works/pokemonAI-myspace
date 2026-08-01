@@ -168,6 +168,13 @@ Rules:
 
 ## 2026-08-01 (loop run #7, ~22:35-23:15 JST)
 
+**⚠️ git push failed again this run — same issue as run #6, see note near the
+end.** Local `main` had this run's commit but could not be pushed to `origin`
+at the time this entry was written. If you are reading this from a *pushed*
+copy of the repo, someone/something pushed it after the fact — otherwise,
+**check `git status`/`git log` vs `origin/main` before assuming this log entry
+or the backlog changes above are visible remotely.**
+
 **Orientation**: Read the backlog first. Top item was run #6's own "check next
 run" question — did ref `55157226`'s (Poffin 2→3, Toko 2→1) score/replays show
 the "never had a 2nd bench Pokémon" loss rate actually drop from 31.6%?
@@ -243,6 +250,32 @@ silently-existing location with old leftover files from earlier runs. Caused a
 few minutes of confusion this run (looked like a stale/conflicting concurrent
 process at first). Always pass scratch-file paths as argv, not as literals
 embedded in a script, when using `/tmp` from this environment.
+
+**git push failure (recurring — 2nd time, run #6 hit this too)**: `git push
+origin main` fails every time in this run's session with:
+```
+fatal: Unable to persist credentials with the 'wincredman' credential store.
+bash: line 1: /dev/tty: No such device or address
+error: failed to execute prompt script (exit code 1)
+fatal: could not read Username for 'https://github.com': No such file or directory
+```
+Confirmed at the *start* of this run that local `main` and `origin/main` were
+in sync (both at `74dd230`), meaning run #6's push failure *did* eventually get
+resolved — almost certainly by the user manually running `git push` from an
+interactive session per run #6's request, since there's no other credential
+source available (checked: no `gh` CLI installed, no `~/.git-credentials` file,
+no relevant env vars, `git credential fill` fails the same way). This looks
+like a structural limitation of this scheduled/non-interactive session (Windows
+Credential Manager's `wincredman` store needs an interactive desktop/prompt
+that isn't available here), not something fixable by changing repo-local git
+config (and the safety rules for this loop explicitly forbid touching git
+config anyway). **Left this run's commit (`d1c7362`, the backlog/log update
+only — no code changes) sitting local-only, unpushed.** If this keeps
+recurring every run, it's worth the user setting up a non-interactive-friendly
+credential source for the scheduled task specifically (e.g. a `store`-based
+credential helper with a PAT, scoped to just this task's context) rather than
+relying on manual pushes each time — but that's a one-time human setup task,
+not something this loop should attempt unsupervised.
 
 **For the next run**:
 1. First check whether a fresh submission's replays are available to analyze
