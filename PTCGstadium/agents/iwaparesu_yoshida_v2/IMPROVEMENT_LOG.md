@@ -41,6 +41,20 @@ Rules:
   below, this run's one change was the Poffin bump instead). Do NOT bump Xerosic to
   4 copies without new evidence — 3 copies already demonstrated correct behavior
   when drawn; the bottleneck looks like draw variance, not ammo count.
+  **run #9追記（2026-08-02、インタラクティブ実行）**: ユーザー依頼で48試合分
+  （提出`55123159`〜`55164361`の6提出を集計、run #4〜#8の解析対象と重複あり）を
+  横断集計したところ、アラカザム系統は1勝7敗（12.5%）とこの上記の「引き運」注記の
+  時点よりむしろ悪化して見えた。「3枚は引ければ機能する、問題は引き運」という
+  run #6の結論自体は否定しないが、「枚数を増やすことは引き運対策の直接的な
+  レバーである」（母数を増やせば初手までに1枚も引けない確率が下がる）と整理し
+  直し、この48試合集計を新根拠として**クセロシキ3→4枚に増量**（トウコ1→0枚で
+  捻出）。ユーザーにはrun #6の「4枚化しない」方針との矛盾を明示した上で確認を
+  取って実施。ボスの指令でアブラ/ケーシィを無条件優先させる案も同時に検討したが、
+  `_boss_priority`/`_select_boss_target`に既にKO可能な的への最優先＋同点時の
+  エスパー枠タイブレークが実装済みと判明したため、KOできない相手を無理に釣り出す
+  リスクを避けて見送った。**次回、アラカザム戦の勝率が改善するか要確認**（この
+  変更で解決しなければ、Toko/Pokégear経由でクセロシキを能動サーチする案に
+  進むのが次の一手）。
 - **Self-referential "damage counters already on this/opponent's Pokémon" attacks**
   (Flail, Wrathful Hearth, Powerful Rage, Damage Beat, Scarring Shout, etc.) are still
   unestimated in `_usable_damage()` (found 2026-07-31 run #2). Would need to read
@@ -182,6 +196,74 @@ Rules:
   the ex-immunity-vs-"ignores defender effects" bypass, and the damage-counter-attack
   blind spot — were resolved before this section existed and are only referenced
   informally in the entries below.)*
+
+---
+
+## 2026-08-02 (loop run #9, インタラクティブ実行 / iwaparesu-loop skill)
+
+**注記**: このrunはユーザーが「銅メダルは今のイワパレスで厳しいのでは」という懸念から
+始まった。まず`kaggle competitions submissions`/`leaderboard`と、直近6提出
+（`55123159`〜`55164361`、2026-07-30〜08-01、スコア508〜577）から48試合分の
+リプレイを横断集計する分析をユーザーとの会話内（本skill呼び出し前）で実施済み
+だったため、本runはオリエンテーション・データ再取得を省略し、その結果を引き継いで
+実装のみ行った。
+
+**48試合集計の要点**（詳細はKaggle上のやり取り参照、project memory
+`iwaparesu-replay-analysis-20260802`にも記録済み）:
+- 24勝24敗（50%）、スコア帯と整合。
+- 炎タイプ相手は48戦中2戦のみ（両方勝ち）——弱点は現状ほぼ無関係。
+- ex/Megaex相手には14戦9勝5敗（64%）——免疫戦略は想定通り機能。
+- リソース枯渇負けは21%まで低下（7/31時点の76%から改善、run #5-6のポフィン/
+  ザルード修正の効果が裏付けられた）。
+- **最大の負け要因はアラカザム系統**：1勝7敗（12.5%）、全24敗中7敗（29%）を占める。
+  「パワフルハンド」（相手自身の手札枚数×2ダメージ）による一撃大ダメージが
+  繰り返し刺さっている。
+
+**バックログとの照合**: run #6（8/1）の未解決項目に「クセロシキ3枚は引ければ
+機能する、問題は引き運であって弾数ではない。新根拠なしに4枚化しないこと」という
+明示的な注記があった。48試合集計はこの注記が書かれた後の複数run分をまとめて
+見ているため技術的には「新しい試合」ではないが、集計母数が大きくなったことで
+「3枚化後もアラカザム戦の勝率は依然として悪い」という傾向がより明確になった。
+これをユーザーに提示し、「枚数を増やすこと自体が引き運対策の直接的なレバーである」
+という整理で4枚化に進むかどうかを確認した上で実施した（詳細は上のバックログ項目
+「Alakazam-line matchup」のrun #9追記を参照）。
+
+**検討したが見送った案**: 相手のアブラ/ケーシィをボスの指令で無条件優先撃破する
+ロジックの追加。コードを確認したところ`_boss_priority`/`_select_boss_target`に
+既に「KO可能な的は種類問わず最優先」「同点時はエスパータイプをタイブレークで優先」
+というロジックが実装済みと判明。KOできない相手を無理に引っ張り出すとボスの指令を
+浪費するリスクがあるため、ユーザーと相談の上この案は見送り、クセロシキ増量のみ
+実施した。
+
+**変更内容**:
+- `deck.csv`: クセロシキの策略（CID 1197）3→4枚。トウコ（CID 1225）1→0枚
+  （全撤去）で捻出。60枚維持を確認。
+- `main.py`: ロジック変更なし（データ駆動のため不要）。`_XEROSIC_HAND_THRESHOLD`
+  定義の直前とトウコの優先度定義に、今回の変更根拠をコメントで追記。
+
+**テスト**:
+- `sort -n deck.csv | uniq -c`: 60行、1197が4枚、1225が0枚（出力から消滅）、
+  ACE SPEC(1159)は1枚のまま、他の枚数に変更なしを確認。
+- `python -c "import ast; ast.parse(...)"`: 構文OK。
+- スモークテスト: `arena.py --p0 agents/iwaparesu_yoshida_v2 --p1 agents/archive/baseline
+  --games 40` → **55.0%、errors: 0**。本skillの方針通りクラッシュ確認のみ。
+- `submission/`に同期後、standalone importで`main.agent`呼び出し可能・
+  `read_deck_csv()`が60枚返すことを確認。
+
+**提出**: ユーザー確認の上、ref **`55165652`**、2026-08-02 ~00:35 JST時点で
+PENDING。本日1回目の提出（前回は8/1 14:25 UTC）。**次回、アラカザム系統の
+勝率がこの変更で改善したか要確認**——改善しなければバックログに記した通り
+「Toko/Pokégear経由でクセロシキを能動サーチする」案に進むのが次の一手。
+
+**提出時の副次的な発見（環境系、コード問題ではない）**: `kaggle competitions submit`
+がアップロード自体は成功する（`kaggle competitions submissions`で確認済み）のに、
+レスポンスメッセージの表示時に`UnicodeEncodeError: 'cp932' codec can't encode
+character '\xe9'`で例外を吐いて非ゼロ終了することがある（メッセージ内のアクセント
+記号付き文字が原因、run #7のログにあった「kaggleコマンドの出力表示でcp932エラー」
+と同種の既知の落とし穴）。今回は`PYTHONIOENCODING=utf-8`を付けずに実行して発生した
+——**submit系コマンドでも常にこの環境変数を付けるべき**。実害は無かった
+（提出自体は成功していた）が、終了コードだけを見て「失敗した」と誤判断しないよう
+次回以降は`kaggle competitions submissions`で実際の反映を確認すること。
 
 ---
 
