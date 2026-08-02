@@ -956,10 +956,21 @@ def _select_search_target(obs: Observation) -> list[int]:
                 return card_cache.get(cid) if cid else None
         return None
 
+    # 2026-08-02: 相手の手札が_XEROSIC_HAND_THRESHOLD以上（アラカザムのパワフルハンド
+    # 等の温存が疑われる状況）の時は、ポケギア3.0等のサポーターサーチでクセロシキの
+    # 策略を最優先で持ってくる（他の候補より常に先）。run #9でクセロシキ3→4枚化した
+    # だけでは実戦のアラカザム戦勝率が改善しなかったため、「引ければ機能する」を
+    # 「引きやすくする」方向でもう一段強化する狙い。ポケモンサーチ（ポフィン等）の
+    # 選択肢にはクセロシキは出現しないため他の判断に影響しない。
+    xerosic_hoarding = _should_play_xerosic(obs)
+
     scored: list[tuple[int, int]] = []
     for i, opt in enumerate(options):
         cd    = get_card_data(opt)
         cid   = cd.cardId if cd else -1
+        if xerosic_hoarding and cid == CID_XEROSIC:
+            scored.append((-1, i))
+            continue
         owned = field_counts.get(cid, 0) + hand_counts.get(cid, 0)
         rank  = _bring_rank(cid, owned)
         scored.append((rank if rank is not None else 99, i))
